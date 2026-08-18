@@ -206,16 +206,15 @@ async def chat(body: ChatRequest, current_user: dict = Depends(get_current_user)
             if not answer:
                 answer = "抱歉，我无法回答您的问题。"
 
-            # Stream answer character-by-character for typewriter effect
             import asyncio
-            CHUNK_SIZE = 2
+            CHUNK_SIZE = 4
             for i in range(0, len(answer), CHUNK_SIZE):
                 chunk = answer[i : i + CHUNK_SIZE]
                 yield {
                     "event": "token",
                     "data": json.dumps({"content": chunk}, ensure_ascii=False),
                 }
-                await asyncio.sleep(0.015)
+                await asyncio.sleep(0.003)
 
             yield {
                 "event": "done",

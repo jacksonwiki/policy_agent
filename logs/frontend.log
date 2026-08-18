@@ -124,3 +124,537 @@
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
+
+> frontend@0.0.0 dev
+> vite
+
+17:38:54 [vite] (client) Re-optimizing dependencies because vite config has changed
+
+  VITE v8.2.1  ready in 3436 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+17:38:56 [vite] (client) [optimizer] bundling dependencies...
+17:39:02 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Shield
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouterView> 
+  at <App>
+17:39:02 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouterView> 
+  at <App>
+17:39:02 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:06 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Shield
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< null > > 
+  at <RouterView> 
+  at <App>
+17:40:06 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< null > > 
+  at <RouterView> 
+  at <App>
+17:40:07 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:11 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:11 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:11 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:12 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:12 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:12 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:14 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:14 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:32 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:32 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:32 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:32 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:32 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:32 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+17:40:33 [vite] (client) [console.warn] [Vue warn]: Failed to resolve component: Robot
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Chat onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <ElMain class="main" > 
+  at <ElContainer> 
+  at <ElContainer class="layout-container" > 
+  at <Layout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {} > > 
+  at <RouterView> 
+  at <App>
+
+> frontend@0.0.0 dev
+> vite
+
+5:41:20 PM [vite] (client) Re-optimizing dependencies because vite config has changed
+
+  VITE v8.2.1  ready in 2850 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+5:41:21 PM [vite] (client) [optimizer] bundling dependencies...
+5:46:30 PM [vite] (client) hmr update /src/pages/Chat.vue, /src/pages/Chat.vue?vue&type=style&index=0&scoped=d33269f6&lang.css
+5:46:56 PM [vite] (client) hmr update /src/style.css
+5:47:23 PM [vite] (client) hmr update /src/pages/Layout.vue, /src/pages/Layout.vue?vue&type=style&index=0&scoped=24f88042&lang.css
+
+> frontend@0.0.0 dev
+> vite
+
+
+  [32m[1mVITE[22m v8.2.1[39m  [2mready in [0m[1m1996[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
