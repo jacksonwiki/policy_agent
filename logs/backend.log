@@ -272,3 +272,98 @@ INFO:     127.0.0.1:50400 - "GET /api/chat/history/thread-1787046007170-wt5sca H
 INFO:     127.0.0.1:50401 - "GET /api/chat/conversations HTTP/1.1" 200 OK
 INFO:     127.0.0.1:50404 - "POST /api/chat HTTP/1.1" 200 OK
 INFO:     127.0.0.1:50412 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [59995]
+INFO:     Started server process [62237]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:50569 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50571 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50592 - "GET /api/chat/history/thread-1787046007170-wt5sca HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50593 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50596 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50607 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50756 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50765 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50772 - "POST /api/kb/upload HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50790 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50815 - "GET /api/chat/history/thread-1787046007170-wt5sca HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50818 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50821 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50826 - "GET /api/users HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50829 - "GET /api/chat/history/thread-1787046007170-wt5sca HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50832 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50847 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50857 - "GET /api/chat/history/thread-1787046007170-wt5sca HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50860 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50968 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50974 - "GET /api/chat/history/thread-1787046007170-wt5sca HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50977 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50982 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50989 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [62237]
+INFO:     Started server process [67928]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:51064 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51066 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51110 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51117 - "GET /api/chat/history/thread-1787040326893-yioy8h HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51118 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51203 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51210 - "GET /api/chat/history/thread-1787047662158-8w0vwl HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51211 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51215 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /api/users HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51258 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51383 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51398 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51403 - "GET /api/chat/history/thread-1787048110580-fc2ixf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51404 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51411 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51419 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51461 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51467 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51489 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [67928]
+INFO:     Started server process [76536]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:51856 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51858 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51877 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51880 - "GET /health HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [76536]
+INFO:     Started server process [81010]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:52086 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52088 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52125 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52130 - "GET /api/chat/history/thread-1787046007170-wt5sca HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52131 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52142 - "POST /api/chat HTTP/1.1" 200 OK
+[chroma] Connection failed: 'RustBindingsAPI' object has no attribute 'bindings'
+[chroma] Connection failed: '/Users/yang/wise/policy_agent/data/chroma'
+INFO:     127.0.0.1:52154 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52190 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52197 - "GET /api/chat/conversations HTTP/1.1" 200 OK

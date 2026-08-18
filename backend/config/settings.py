@@ -25,18 +25,37 @@ class Settings(BaseSettings):
     app_port: int = 8000
     debug: bool = True
 
-    # ── DeepSeek LLM (主力) ──────────────────────────────
+    # ── LLM Provider 切换 ───────────────────────────────
+    # 可选: deepseek | ollama | qwen   默认 deepseek
+    llm_provider: Literal["deepseek", "ollama", "qwen"] = Field(
+        default="deepseek", json_schema_extra={"env": "LLM_PROVIDER"}
+    )
+    # 主 LLM 不可用时的降级顺序，逗号分隔，空值表示不降级
+    # 示例: "ollama,qwen" 表示主 LLM 失败后依次尝试 ollama → qwen → mock
+    llm_fallback_chain: str = Field(
+        default="ollama,qwen", json_schema_extra={"env": "LLM_FALLBACK_CHAIN"}
+    )
+
+    # ── DeepSeek LLM ──────────────────────────────────────
     deepseek_api_key: str = Field(default="", json_schema_extra={"env": "DEEPSEEK_API_KEY"})
     deepseek_base_url: str = "https://api.deepseek.com"
     deepseek_model: str = "deepseek-chat"
     deepseek_temperature: float = 0.3
     deepseek_max_tokens: int = 4096
 
-    # ── 本地 Ollama (辅助) ───────────────────────────────
+    # ── 本地 Ollama ───────────────────────────────────────
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "qwen3.5:0.8b"
     ollama_embedding_model: str = "nomic-embed-text:latest"
     ollama_temperature: float = 0.3
+
+    # ── 千问 (Qwen / DashScope) ──────────────────────────
+    # 通过 DashScope OpenAI 兼容接口调用
+    qwen_api_key: str = Field(default="", json_schema_extra={"env": "DASHSCOPE_API_KEY"})
+    qwen_base_url: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    qwen_model: str = "qwen-plus"
+    qwen_temperature: float = 0.3
+    qwen_max_tokens: int = 4096
 
     # ── Rerank ────────────────────────────────────────────
     rerank_model: str = "dengcao/bge-reranker-v2-m3"

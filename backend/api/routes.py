@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime
 from typing import AsyncIterator
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, File, UploadFile, Form
 from sse_starlette.sse import EventSourceResponse
 
 from ..core.graph import build_agent_graph
@@ -412,6 +412,110 @@ async def upload_document(body: KBUploadRequest, current_user: dict = Depends(ge
         "title": doc["title"],
         "chunk_count": doc["chunk_count"],
         "created_at": created_at,
+    }
+
+
+@router.post("/kb/upload-file")
+async def upload_file(
+    kb_id: str = Form("default"),
+    title: str = Form(""),
+    chunk_size: int = Form(800),
+    chunk_overlap: int = Form(100),
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user),
+):
+    """Upload a file (.txt/.md/.pdf/.csv) to the RAG knowledge base."""
+    if kb_id not in _kb_documents:
+        _kb_documents[kb_id] = []
+
+    raw_bytes = await file.read()
+    filename = file.filename or "uploaded_file"
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
+
+    # Parse text based on extension
+    if ext in ("txt", "md", "csv", "json", "yaml", "yml"):
+        content = raw_bytes.decode("utf-8", errors="replace")
+    elif ext == "pdf":
+        try:
+            from pypdf import PdfReader
+            import io
+            reader = PdfReader(io.BytesIO(raw_bytes))
+            pages = [page.extract_text() or "" for page in reader.pages]
+            content = "\n\n".join(pages)
+        except ImportError:
+            try:
+                import fitz  # PyMuPDF
+                import io
+                doc = fitz.open(stream=raw_bytes, filetype="pdf")
+                content = "\n\n".join(page.get_text() for page in doc)
+            except ImportError:
+                raise HTTPException(400, "PDF parsing needs pypdf or PyMuPDF. Run: pip install pypdf")
+    elif ext == "docx":
+        try:
+            from docx import Document
+            import io
+            doc = Document(io.BytesIO(raw_bytes))
+            content = "\n\n".join(p.text for p in doc.paragraphs if p.text)
+        except ImportError:
+            raise HTTPException(400, "DOCX parsing needs python-docx. Run: pip install python-docx")
+    else:
+        content = raw_bytes.decode("utf-8", errors="replace")
+
+    if not content.strip():
+        raise HTTPException(400, "文件内容为空或无法解析")
+
+    doc_title = title or filename
+    doc_id = f"doc_{uuid.uuid4().hex[:12]}"
+    created_at = datetime.now().isoformat()
+
+    doc = {
+        "doc_id": doc_id,
+        "title": doc_title,
+        "content": content,
+        "chunk_count": max(1, len(content) // chunk_size),
+        "metadata": {"source": filename, "file_type": ext},
+        "created_at": created_at,
+    }
+    _kb_documents[kb_id].append(doc)
+
+    try:
+        from ..retrievers.vector import VectorRetriever
+        from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+        splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap,
+        )
+        chunks = splitter.split_text(content)
+
+        docs = []
+        for i, chunk in enumerate(chunks):
+            chunk_id = f"{doc_id}_chunk_{i}"
+            docs.append({
+                "id": chunk_id,
+                "content": chunk,
+                "metadata": {
+                    "source": doc_id,
+                    "title": doc_title,
+                    "chunk_index": i,
+                    "kb_id": kb_id,
+                    "filename": filename,
+                },
+            })
+
+        retriever = VectorRetriever()
+        retriever.add_documents(docs)
+        doc["chunk_count"] = len(chunks)
+    except Exception:
+        pass
+
+    return {
+        "doc_id": doc_id,
+        "title": doc_title,
+        "chunk_count": doc["chunk_count"],
+        "created_at": created_at,
+        "filename": filename,
+        "file_size": len(raw_bytes),
     }
 
 

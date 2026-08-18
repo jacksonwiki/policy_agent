@@ -52,7 +52,12 @@ def create_app() -> FastAPI:
 
     @app.get("/health")
     async def health_check():
-        return {"status": "ok", "app": settings.app_name}
+        from .llm.router import get_current_provider
+        return {
+            "status": "ok",
+            "app": settings.app_name,
+            "llm_provider": get_current_provider(),
+        }
 
     return app
 
