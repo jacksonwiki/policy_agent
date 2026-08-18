@@ -19,20 +19,24 @@ def get_deepseek_chat() -> BaseChatModel:
 
     try:
         from langchain_deepseek import ChatDeepSeek
-    except ImportError:
-        # Fallback: use langchain's built-in ChatOpenAI with deepseek base URL
-        from langchain_community.chat_models import ChatOpenAI
 
-        return ChatOpenAI(
+        return ChatDeepSeek(
             api_key=settings.deepseek_api_key,
-            base_url=settings.deepseek_base_url,
             model=settings.deepseek_model,
             temperature=settings.deepseek_temperature,
             max_tokens=settings.deepseek_max_tokens,
         )
+    except ImportError:
+        pass
 
-    return ChatDeepSeek(
+    try:
+        from langchain_openai import ChatOpenAI
+    except ImportError:
+        from langchain_community.chat_models import ChatOpenAI
+
+    return ChatOpenAI(
         api_key=settings.deepseek_api_key,
+        base_url=settings.deepseek_base_url,
         model=settings.deepseek_model,
         temperature=settings.deepseek_temperature,
         max_tokens=settings.deepseek_max_tokens,

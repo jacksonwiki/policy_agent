@@ -121,12 +121,14 @@ async def chat(body: ChatRequest, current_user: dict = Depends(get_current_user)
     # Load previous state from checkpointer to accumulate messages
     config = {"configurable": {"thread_id": thread_id}}
     previous_messages = []
+    prev_summary = ""
     try:
         state = await agent.aget_state(config)
         if state is not None and state.values:
             prev_msgs = state.values.get("messages", [])
             if prev_msgs:
                 previous_messages = list(prev_msgs)
+            prev_summary = state.values.get("conversation_summary", "") or ""
     except Exception:
         pass
 
@@ -139,6 +141,7 @@ async def chat(body: ChatRequest, current_user: dict = Depends(get_current_user)
         "thread_id": thread_id,
         "user_id": user_id,
         "compressed_history": "",
+        "conversation_summary": prev_summary,
         "rewritten_query": "",
         "intent": "unknown",
         "tool_plan": [],

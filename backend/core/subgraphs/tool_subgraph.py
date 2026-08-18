@@ -15,8 +15,6 @@ from ...core.state import ToolCall, ToolResult, HitlReview
 
 # ── Tool sub-graph state ─────────────────────────────────
 class ToolSubState(dict):
-    user_query: str
-    thread_id: str
     tool_plan: list[ToolCall]
     tool_results: list[ToolResult]
     hitl_reviews: list[HitlReview]

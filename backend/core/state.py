@@ -62,6 +62,7 @@ class AgentState(dict):
     thread_id: str
     user_id: str
     compressed_history: str
+    conversation_summary: str
     rewritten_query: str
     intent: str
     tool_plan: list[dict]

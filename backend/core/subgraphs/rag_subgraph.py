@@ -17,7 +17,6 @@ def _merge_inspect(existing: dict, new: dict) -> dict:
 
 
 class RagSubState(TypedDict):
-    user_query: str
     rewritten_query: str
     sub_queries: list[str]
     vector_docs: list[dict]

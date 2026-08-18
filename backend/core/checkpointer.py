@@ -1,6 +1,6 @@
 """Checkpointer initialisation for LangGraph.
 
-Uses AsyncSqliteSaver for persistent session storage.
+Uses SqliteSaver for persistent session storage.
 The SQLite file lives in data/checkpoints.sqlite and survives restarts.
 """
 from __future__ import annotations
@@ -20,11 +20,38 @@ _saver: BaseCheckpointSaver | None = None
 _saver_cm = None
 
 
+def _build_sqlite_saver() -> BaseCheckpointSaver | None:
+    """Try to create a SQLite saver (sync). Returns None if unavailable."""
+    try:
+        from langgraph.checkpoint.sqlite import SqliteSaver
+
+        cm = SqliteSaver.from_conn_string(str(_sqlite_path))
+        saver = cm.__enter__()
+        saver.setup()
+        print(f"[checkpointer] SqliteSaver connected → {_sqlite_path}")
+        return saver
+    except Exception as e:
+        print(f"[checkpointer] SqliteSaver failed: {e}")
+        return None
+
+
 def get_checkpointer() -> BaseCheckpointSaver:
+    """Return the persistent checkpointer.
+
+    Uses SqliteSaver (sync) by default; falls back to MemorySaver if SQLite
+    is not available.  The same instance is reused across calls.
+    """
     global _saver
     if _saver is not None:
         return _saver
+
+    saver = _build_sqlite_saver()
+    if saver is not None:
+        _saver = saver
+        return _saver
+
     _saver = MemorySaver()
+    print("[checkpointer] Falling back to MemorySaver (NOT persistent)")
     return _saver
 
 
@@ -32,11 +59,11 @@ async def init_checkpointer() -> None:
     """Initialize the persistent SQLite checkpointer.
 
     Must be called during the FastAPI lifespan startup phase.
-    Stores both the saver instance and the async context manager
-    so the connection stays alive for the app's lifetime.
+    Prefers async SqliteSaver; falls back to sync; then to MemorySaver.
     """
     global _saver, _saver_cm
 
+    # 1. Try async SQLite
     try:
         from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
@@ -48,20 +75,15 @@ async def init_checkpointer() -> None:
     except Exception as e:
         print(f"[checkpointer] AsyncSqliteSaver failed: {e}")
 
-    try:
-        from langgraph.checkpoint.sqlite import SqliteSaver
-
-        cm = SqliteSaver.from_conn_string(str(_sqlite_path))
-        _saver = cm.__enter__()
-        if hasattr(_saver, "setup"):
-            _saver.setup()
-        print(f"[checkpointer] Sync SqliteSaver connected → {_sqlite_path}")
+    # 2. Try sync SQLite
+    saver = _build_sqlite_saver()
+    if saver is not None:
+        _saver = saver
         return
-    except Exception as e:
-        print(f"[checkpointer] Sync SqliteSaver failed: {e}")
 
+    # 3. Fallback
     _saver = MemorySaver()
-    print("[checkpointer] Fallback to MemorySaver (NOT persistent)")
+    print("[checkpointer] Falling back to MemorySaver (NOT persistent)")
 
 
 async def close_checkpointer() -> None:

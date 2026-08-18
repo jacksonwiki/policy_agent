@@ -89,6 +89,11 @@ class Settings(BaseSettings):
     agent_max_tool_rounds: int = 5
     agent_max_sub_queries: int = 5
 
+    # ── 短期记忆 / 压缩 ──────────────────────────────────
+    memory_max_recent_messages: int = 6
+    memory_summary_max_tokens: int = 500
+    memory_compress_threshold: int = 10
+
 
 @lru_cache
 def get_settings() -> Settings:
