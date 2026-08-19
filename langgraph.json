@@ -1,4 +1,8 @@
 {
+  "source": {
+    "kind": "uv",
+    "root": "."
+  },
   "graphs": {
     "agent": "backend.studio_entry:agent"
   }

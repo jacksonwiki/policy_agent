@@ -3,9 +3,10 @@
 # 保险智能助手 — 一键管理脚本
 # 用法:
 #   ./start.sh start [mock]   — 启动服务（mock 可选）
-#   ./start.sh stop            — 停止服务
+#   ./start.sh stop            — 停止服务（含 Studio）
 #   ./start.sh restart [mock]  — 重启服务
 #   ./start.sh status          — 查看服务状态
+#   ./start.sh studio          — 单独启动 LangGraph Studio（调试用）
 # ────────────────────────────────────────────────
 
 set -o pipefail
@@ -16,6 +17,7 @@ cd "$PROJECT_DIR"
 PYTHON=/Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13
 BACKEND_PORT=8000
 FRONTEND_PORT=5173
+STUDIO_PORT=2024
 PID_DIR="$PROJECT_DIR/.pids"
 LOG_DIR="$PROJECT_DIR/logs"
 
@@ -23,6 +25,11 @@ mkdir -p "$PID_DIR" "$LOG_DIR"
 
 BACKEND_PID_FILE="$PID_DIR/backend.pid"
 FRONTEND_PID_FILE="$PID_DIR/frontend.pid"
+STUDIO_PID_FILE="$PID_DIR/studio.pid"
+
+STUDIO_BIN="$PROJECT_DIR/.venv/bin/langgraph"
+STUDIO_CMD=(dev --no-browser --allow-blocking)
+STUDIO_URL="https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:$STUDIO_PORT"
 
 # ── 工具函数 ──────────────────────────────────────
 
@@ -73,6 +80,44 @@ check_frontend() {
         echo "📦 安装前端依赖..."
         cd frontend && npm install && cd ..
     fi
+}
+
+# ── Studio (LangGraph 调试) ─────────────────────
+
+do_studio_start() {
+    if is_running "$STUDIO_PID_FILE"; then
+        echo "⚠️  Studio 已在运行 (PID: $(cat "$STUDIO_PID_FILE"))"
+        return 0
+    fi
+
+    if [ ! -x "$STUDIO_BIN" ]; then
+        echo "⚠️  未找到 $STUDIO_BIN，跳过 Studio 启动"
+        echo "   安装: uv pip install --python .venv/bin/python 'langgraph-cli[inmem]'"
+        return 0
+    fi
+
+    echo "🛑 清理 Studio 端口..."
+    kill_port $STUDIO_PORT
+    echo "🚀 启动 LangGraph Studio (端口: $STUDIO_PORT)..."
+    nohup "$STUDIO_BIN" "${STUDIO_CMD[@]}" > "$LOG_DIR/studio.log" 2>&1 &
+    echo $! > "$STUDIO_PID_FILE"
+    sleep 2
+    echo "  Studio PID: $(cat "$STUDIO_PID_FILE")"
+    echo "  Studio UI:  $STUDIO_URL"
+}
+
+do_studio_stop() {
+    if is_running "$STUDIO_PID_FILE"; then
+        local pid=$(cat "$STUDIO_PID_FILE")
+        echo "  停止 Studio (PID: $pid)..."
+        kill "$pid" 2>/dev/null || true
+        sleep 1
+        kill -9 "$pid" 2>/dev/null || true
+        rm -f "$STUDIO_PID_FILE"
+    fi
+    # 兜底：langgraph dev 会 fork API server 子进程，清理所有残留
+    pkill -9 -f "langgraph dev" 2>/dev/null || true
+    kill_port $STUDIO_PORT
 }
 
 # ── 启动 ──────────────────────────────────────────
@@ -162,12 +207,18 @@ with open('$FRONTEND_PID_FILE', 'w') as f:
     fi
 
     echo ""
+
+    # 顺带启动 LangGraph Studio（调试用，失败不影响主服务）
+    do_studio_start
+
+    echo ""
     echo "══════════════════════════════════════════"
     echo "  ✅ 启动完成！"
     echo ""
     echo "  前端:  http://localhost:$FRONTEND_PORT"
     echo "  后端:  http://localhost:$BACKEND_PORT"
     echo "  API:   http://localhost:$BACKEND_PORT/docs"
+    echo "  Studio: $STUDIO_URL"
     echo ""
     echo "  默认账号: admin / admin"
     echo "  会话存储: data/checkpoints.sqlite"
@@ -203,6 +254,9 @@ do_stop() {
         echo "  前端未在运行"
     fi
 
+    # Studio（若在运行）
+    do_studio_stop
+
     # 兜底清理
     kill_port $BACKEND_PORT
     kill_port $FRONTEND_PORT
@@ -234,6 +288,14 @@ do_status() {
         frontend_ok=true
     else
         echo "❌ 前端未运行"
+    fi
+
+    if is_running "$STUDIO_PID_FILE"; then
+        local pid=$(cat "$STUDIO_PID_FILE")
+        echo "✅ Studio 运行中 (PID: $pid, 端口: $STUDIO_PORT)"
+        echo "   $STUDIO_URL"
+    else
+        echo "❌ Studio 未运行"
     fi
 
     # 数据存储状态
@@ -292,13 +354,20 @@ case "$ACTION" in
     status)
         do_status
         ;;
+    studio)
+        echo "══════════════════════════════════════════"
+        echo "  保险智能助手 — 启动 LangGraph Studio"
+        echo "══════════════════════════════════════════"
+        do_studio_start
+        ;;
     *)
-        echo "用法: $0 {start|stop|restart|status} [mock]"
+        echo "用法: $0 {start|stop|restart|status|studio} [mock]"
         echo ""
         echo "  start [mock]   启动服务 (mock = 离线测试模式)"
-        echo "  stop            停止服务"
+        echo "  stop            停止服务（含 Studio）"
         echo "  restart [mock]  重启服务"
         echo "  status          查看运行状态"
+        echo "  studio          单独启动 LangGraph Studio（调试用）"
         exit 1
         ;;
 esac

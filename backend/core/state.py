@@ -1,11 +1,12 @@
 """Agent & RAG graph state definitions."""
 from __future__ import annotations
 
-from typing import Annotated, Literal, Optional, Any, TypedDict
+from typing import Annotated, Literal, Optional, Any
 
 from langchain_core.messages import BaseMessage
 from langgraph.graph.message import add_messages
 from pydantic import BaseModel, Field
+from typing_extensions import TypedDict
 
 
 def merge_dicts(existing: dict, new: dict) -> dict:
@@ -56,7 +57,7 @@ class ToolState(TypedDict):
     iteration: int
 
 
-class AgentState(dict):
+class AgentState(TypedDict):
     messages: list[BaseMessage]
     user_query: str
     thread_id: str

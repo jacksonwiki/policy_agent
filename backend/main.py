@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .config import get_settings
+from .config import configure_langsmith, get_settings
 from .api.auth import UserStore
 from .api.routes import router
 
@@ -30,6 +30,8 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
+    # 必须先于任何 LangGraph / LLM 调用注入 LangSmith 环境变量
+    configure_langsmith()
     settings = get_settings()
 
     app = FastAPI(

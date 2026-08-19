@@ -1,6 +1,7 @@
 """Application settings loaded from environment variables / .env."""
 from __future__ import annotations
 
+import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
@@ -67,6 +68,24 @@ class Settings(BaseSettings):
     rerank_model: str = "dengcao/bge-reranker-v2-m3"
     rerank_max_top_k: int = 5
 
+    # ── LangSmith 可观测性（可选）──────────────────────────
+    # 填好 LANGCHAIN_API_KEY 并把 LANGCHAIN_TRACING_V2 置为 true 后，
+    # LangGraph / LLM 调用会自动上报 trace 到 LangSmith，用于调试。
+    # 参考: https://smith.langchain.com → Settings → API Keys
+    langchain_tracing_v2: bool = Field(
+        default=False, json_schema_extra={"env": "LANGCHAIN_TRACING_V2"}
+    )
+    langchain_api_key: str = Field(
+        default="", json_schema_extra={"env": "LANGCHAIN_API_KEY"}
+    )
+    langchain_project: str = Field(
+        default="policy_agent", json_schema_extra={"env": "LANGCHAIN_PROJECT"}
+    )
+    langchain_endpoint: str = Field(
+        default="https://api.smith.langchain.com",
+        json_schema_extra={"env": "LANGCHAIN_ENDPOINT"},
+    )
+
     # ── 向量库 Chroma ────────────────────────────────────
     chroma_collection: str = "policy_knowledge"
     embedding_dim: int = 768  # nomic-embed-text 输出维度
@@ -104,3 +123,27 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
+
+def configure_langsmith() -> None:
+    """Export LangSmith settings into os.environ so that langchain-core's
+    auto-instrumentation (langsmith SDK) picks them up at runtime.
+
+    NOTE: pydantic-settings only reads declared fields from .env and does NOT
+    write them back into os.environ, so without this injection the
+    LANGCHAIN_* vars in .env would never be seen by the langsmith SDK.
+    """
+    settings = get_settings()
+    if not settings.langchain_api_key:
+        # 没有配置 key 时强制关闭 tracing，避免误开
+        os.environ["LANGCHAIN_TRACING_V2"] = "false"
+        os.environ["LANGSMITH_TRACING"] = "false"
+        return
+
+    tracing = "true" if settings.langchain_tracing_v2 else "false"
+    # 两个前缀都设置，兼容 langsmith SDK 不同版本
+    os.environ["LANGCHAIN_TRACING_V2"] = tracing
+    os.environ["LANGSMITH_TRACING"] = tracing
+    os.environ["LANGCHAIN_API_KEY"] = settings.langchain_api_key
+    os.environ["LANGCHAIN_PROJECT"] = settings.langchain_project
+    os.environ["LANGCHAIN_ENDPOINT"] = settings.langchain_endpoint

@@ -1,3 +1,3 @@
-from .settings import Settings, get_settings
+from .settings import Settings, configure_langsmith, get_settings
 
-__all__ = ["Settings", "get_settings"]
+__all__ = ["Settings", "configure_langsmith", "get_settings"]

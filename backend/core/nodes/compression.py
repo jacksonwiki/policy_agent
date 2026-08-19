@@ -73,19 +73,32 @@ def compress_conversation(state: AgentState) -> dict:
         compressed_history: str  — the full context to feed downstream
                                    (summary + recent window).
         conversation_summary: str — the updated rolling summary.
+        user_query: str — the latest user message, used as a fallback when
+            the caller (e.g. LangGraph Studio) only populates ``messages``
+            but leaves ``user_query`` empty.
     """
     t0 = time.monotonic()
     settings = get_settings()
     messages = state.get("messages", [])
     existing_summary = state.get("conversation_summary", "")
+    user_query = state.get("user_query", "")
     max_recent = settings.memory_max_recent_messages
     threshold = settings.memory_compress_threshold
+
+    # Studio 模式兜底：从 messages 里取最后一条用户消息补到 user_query
+    if not user_query and messages:
+        last_msg = messages[-1]
+        if isinstance(last_msg, HumanMessage):
+            user_query = last_msg.content or ""
+        elif isinstance(last_msg, dict) and last_msg.get("type") in ("human", "user"):
+            user_query = str(last_msg.get("content", ""))
 
     if len(messages) <= threshold:
         transcript = _build_transcript(messages)
         return {
             "compressed_history": transcript,
             "conversation_summary": existing_summary,
+            "user_query": user_query,
         }
 
     split_idx = max(0, len(messages) - max_recent)
@@ -128,4 +141,5 @@ def compress_conversation(state: AgentState) -> dict:
     return {
         "compressed_history": compressed_history,
         "conversation_summary": new_summary,
+        "user_query": user_query,
     }
