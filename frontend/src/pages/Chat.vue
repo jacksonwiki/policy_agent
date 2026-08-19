@@ -91,14 +91,15 @@
             />
             <div class="input-actions">
               <el-button
-                :type="streaming ? 'info' : 'primary'"
-                :loading="streaming"
-                @click="sendMessage"
+                :type="streaming ? 'danger' : 'primary'"
+                :loading="false"
+                @click="streaming ? stopStreaming() : sendMessage()"
                 class="send-btn"
                 round
               >
-                <el-icon v-if="!streaming"><Promotion /></el-icon>
-                <span>{{ streaming ? '思考中' : '发送' }}</span>
+                <el-icon v-if="streaming"><VideoPause /></el-icon>
+                <el-icon v-else><Promotion /></el-icon>
+                <span>{{ streaming ? '停止' : '发送' }}</span>
               </el-button>
             </div>
           </div>
@@ -116,6 +117,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick, onMounted, markRaw } from 'vue'
+import { VideoPause } from '@element-plus/icons-vue'
 import { connectChat, type SSEEvent } from '../api/sse'
 import HitlCard from '../components/HitlCard.vue'
 import api from '../api/client'
@@ -149,6 +151,7 @@ const streaming = ref(false)
 const historyRef = ref()
 const conversations = ref<Conversation[]>([])
 const currentAnswer = ref('')
+const abortController = ref<AbortController | null>(null)
 
 function generateThreadId() {
   return `thread-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
@@ -224,11 +227,26 @@ function onHitlResolved(data: { answer: string; intent: string }) {
   }
 }
 
+function stopStreaming() {
+  if (abortController.value) {
+    abortController.value.abort()
+    abortController.value = null
+  }
+  streaming.value = false
+  const lastMsg = messages.value[messages.value.length - 1]
+  if (lastMsg && !lastMsg.content) {
+    lastMsg.content = '（已停止生成）'
+  }
+}
+
 async function sendMessageText(text: string) {
   messages.value.push({ role: 'assistant', content: '' })
   inputText.value = ''
   streaming.value = true
   currentAnswer.value = ''
+
+  const controller = new AbortController()
+  abortController.value = controller
 
   await nextTick()
   scrollToBottom()
@@ -262,10 +280,13 @@ async function sendMessageText(text: string) {
         streaming.value = false
         const lastMsg = messages.value[messages.value.length - 1]
         lastMsg.content = lastMsg.content || '连接错误，请重试'
-      }
+      },
+      controller.signal
     )
   } catch (e) {
     streaming.value = false
+  } finally {
+    abortController.value = null
   }
 }
 

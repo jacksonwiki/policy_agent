@@ -352,8 +352,22 @@ async function deleteDoc(docId: string) {
   } catch {}
 }
 
-function viewDoc(doc: KBDocument) {
-  previewDoc.value = doc
+async function viewDoc(doc: KBDocument) {
+  try {
+    const res = await api.get<{ content: string; title: string; chunk_count: number; created_at: string }>(
+      `/kb/documents/${doc.doc_id}`,
+      { params: { kb_id: uploadForm.value.kbId } }
+    )
+    previewDoc.value = {
+      doc_id: doc.doc_id,
+      title: res.title || doc.title,
+      content: res.content || '',
+      chunk_count: res.chunk_count ?? doc.chunk_count,
+      created_at: res.created_at || doc.created_at,
+    }
+  } catch {
+    previewDoc.value = doc
+  }
   previewVisible.value = true
 }
 

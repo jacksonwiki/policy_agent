@@ -9,18 +9,20 @@ from ..config import get_settings
 class BM25Retriever:
     """In-memory BM25 retriever.
 
-    Documents are loaded from Milvus on first init and cached.
-    For production with >100k docs, consider Elasticsearch instead.
+    Documents are loaded from VectorRetriever on first init and cached at class level
+    so that all instances share the same index.
     """
 
+    _shared_bm25: Any = None
+    _shared_docs: list[dict] = []
+    _initialized: bool = False
+
     def __init__(self) -> None:
-        self._bm25: Any = None
-        self._docs: list[dict] = []
-        self._initialized = False
+        pass
 
     def _initialize(self) -> None:
-        """Load all docs from Chroma and build BM25 index."""
-        if self._initialized:
+        """Load all docs from VectorRetriever and build BM25 index (once)."""
+        if BM25Retriever._initialized:
             return
 
         try:
@@ -31,18 +33,18 @@ class BM25Retriever:
         try:
             from .vector import VectorRetriever
             vr = VectorRetriever()
-            self._docs = vr.get_all_documents()
+            BM25Retriever._shared_docs = vr.get_all_documents()
 
-            if not self._docs:
-                self._initialized = True
+            if not BM25Retriever._shared_docs:
+                BM25Retriever._initialized = True
                 return
 
-            tokenized_corpus = [self._tokenize(d["content"]) for d in self._docs]
-            self._bm25 = BM25Okapi(tokenized_corpus)
-            self._initialized = True
+            tokenized_corpus = [self._tokenize(d["content"]) for d in BM25Retriever._shared_docs]
+            BM25Retriever._shared_bm25 = BM25Okapi(tokenized_corpus)
+            BM25Retriever._initialized = True
 
         except Exception:
-            self._initialized = True
+            BM25Retriever._initialized = True
 
     @staticmethod
     def _tokenize(text: str) -> list[str]:
@@ -57,11 +59,11 @@ class BM25Retriever:
         """Retrieve top-k documents matching the query via BM25."""
         self._initialize()
 
-        if not self._bm25 or not self._docs:
+        if not BM25Retriever._shared_bm25 or not BM25Retriever._shared_docs:
             return []
 
         tokenized_query = self._tokenize(query)
-        scores = self._bm25.get_scores(tokenized_query)
+        scores = BM25Retriever._shared_bm25.get_scores(tokenized_query)
 
         # Sort by score descending
         ranked_indices = sorted(
@@ -74,14 +76,14 @@ class BM25Retriever:
         for idx in ranked_indices:
             if scores[idx] <= 0:
                 continue
-            d = dict(self._docs[idx])
+            d = dict(BM25Retriever._shared_docs[idx])
             d["score"] = float(scores[idx])
             results.append(d)
 
         return results
 
     def refresh(self) -> None:
-        """Force reload of documents from Chroma."""
-        self._initialized = False
-        self._bm25 = None
-        self._docs = []
+        """Force reload of documents from VectorRetriever."""
+        BM25Retriever._initialized = False
+        BM25Retriever._shared_bm25 = None
+        BM25Retriever._shared_docs = []

@@ -26,3 +26,257 @@ INFO:     127.0.0.1:56777 - "GET /api/chat/conversations HTTP/1.1" 200 OK
   return self._jws.encode(
 INFO:     127.0.0.1:56786 - "POST /api/auth/login HTTP/1.1" 200 OK
 INFO:     127.0.0.1:56788 - "POST /api/chat HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+INFO:     127.0.0.1:56831 - "POST /api/auth/login HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:     127.0.0.1:56833 - "POST /api/chat HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:     127.0.0.1:56847 - "GET /api/chat/history/api-mem-test-001 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56849 - "POST /api/chat HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:     127.0.0.1:56886 - "POST /api/chat HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+INFO:     127.0.0.1:56892 - "POST /api/auth/login HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:     127.0.0.1:56894 - "POST /api/chat HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:     127.0.0.1:56899 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56901 - "POST /api/chat HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:     127.0.0.1:56904 - "GET /api/chat/history/api-mem-test-002 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56910 - "GET /api/chat/history/api-mem-test-002 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56916 - "GET /api/chat/history/api-mem-test-001 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56924 - "POST /api/chat HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:     127.0.0.1:56934 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56943 - "POST /api/chat HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:     127.0.0.1:56950 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56954 - "POST /api/chat HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:     127.0.0.1:56960 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56973 - "GET /api/chat/history/api-mem-test-002 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56976 - "GET /api/chat/history/api-mem-test-001 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56979 - "GET /api/chat/history/thread-1787069164002-hw2cmc HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56985 - "GET /api/chat/history/thread-1787070335922-nh7sdt HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56988 - "GET /api/chat/history/api-mem-test-002 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56991 - "GET /api/chat/history/api-mem-test-001 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56994 - "GET /api/chat/history/thread-1787069164002-hw2cmc HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57016 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57020 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.4.6 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/uvicorn/__main__.py", line 4, in <module>
+    uvicorn.main()
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/click/core.py", line 1569, in __call__
+    return self.main(*args, **kwargs)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/click/core.py", line 1490, in main
+    rv = self.invoke(ctx)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/click/core.py", line 1353, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/click/core.py", line 907, in invoke
+    return callback(*args, **kwargs)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/uvicorn/main.py", line 440, in main
+    run(
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/uvicorn/main.py", line 621, in run
+    server.run()
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 77, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/uvicorn/_compat.py", line 30, in asyncio_run
+    return runner.run(main)
+  File "/Users/yang/.local/share/uv/python/cpython-3.11.13-macos-x86_64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/starlette/routing.py", line 670, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 2734, in app
+    await route.handle(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 1780, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 2789, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 1800, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 1279, in handle
+    await app(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 158, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 144, in app
+    response = await f(request)
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 706, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 352, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/yang/wise/policy_agent/backend/api/routes.py", line 486, in upload_file
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/langchain_text_splitters/__init__.py", line 39, in <module>
+    from langchain_text_splitters.sentence_transformers import (
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/langchain_text_splitters/sentence_transformers.py", line 11, in <module>
+    from sentence_transformers import (  # type: ignore[import-not-found, unused-ignore]
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/sentence_transformers/__init__.py", line 10, in <module>
+    from sentence_transformers.backend import (
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/sentence_transformers/backend/__init__.py", line 5, in <module>
+    from .quantize import export_dynamic_quantized_onnx_model, export_static_quantized_openvino_model
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/sentence_transformers/backend/quantize.py", line 7, in <module>
+    from sentence_transformers.util import disable_datasets_caching, is_datasets_available
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/sentence_transformers/util/__init__.py", line 4, in <module>
+    from .distributed import all_gather, all_gather_with_grad
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/sentence_transformers/util/distributed.py", line 3, in <module>
+    import torch
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/torch/__init__.py", line 1477, in <module>
+    from .functional import *  # noqa: F403
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/torch/functional.py", line 9, in <module>
+    import torch.nn.functional as F
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/torch/nn/__init__.py", line 1, in <module>
+    from .modules import *  # noqa: F403
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/torch/nn/modules/__init__.py", line 35, in <module>
+    from .transformer import TransformerEncoder, TransformerDecoder, \
+  File "/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/torch/nn/modules/transformer.py", line 20, in <module>
+    device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/torch/nn/modules/transformer.py:20: UserWarning: Failed to initialize NumPy: _ARRAY_API not found (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+INFO:     127.0.0.1:57024 - "POST /api/kb/upload-file HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:     127.0.0.1:57034 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57045 - "POST /api/rag/inspect HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:     127.0.0.1:57054 - "GET /api/users HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57063 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57066 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57071 - "GET /api/users HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57074 - "GET /api/users HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57078 - "POST /api/rag/inspect HTTP/1.1" 200 OK
+/Users/yang/wise/policy_agent/.venv/lib/python3.11/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:     127.0.0.1:57086 - "GET /api/users HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57096 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57099 - "GET /api/chat/history/thread-1787069164002-hw2cmc HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57102 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [47545]
+INFO:     Started server process [42014]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:60482 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60484 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60495 - "GET /api/chat/history/thread-1787069164002-hw2cmc HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60498 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60508 - "POST /api/chat HTTP/1.1" 200 OK
+[chroma] Connection failed: 'RustBindingsAPI' object has no attribute 'bindings'
+[chroma] Connection failed: '/Users/yang/wise/policy_agent/data/chroma'
+INFO:     127.0.0.1:60524 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60576 - "POST /api/chat HTTP/1.1" 200 OK
+Deserializing unregistered type backend.core.state.ToolCall from checkpoint. This will be blocked in a future version. Set LANGGRAPH_STRICT_MSGPACK=true to block now, or add to allowed_msgpack_modules to allow explicitly: [('backend.core.state', 'ToolCall')]
+Deserializing unregistered type backend.core.state.ToolResult from checkpoint. This will be blocked in a future version. Set LANGGRAPH_STRICT_MSGPACK=true to block now, or add to allowed_msgpack_modules to allow explicitly: [('backend.core.state', 'ToolResult')]
+INFO:     127.0.0.1:60615 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64053 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64101 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64138 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64140 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64154 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64157 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64166 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64170 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64180 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64185 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64188 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64191 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64258 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64260 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64267 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64303 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64321 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64328 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64336 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64354 - "POST /api/kb/upload-file HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64390 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64483 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64610 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64614 - "GET /api/kb/documents/doc_6554c75be20a?kb_id=default HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:64620 - "DELETE /api/kb/documents/doc_6554c75be20a?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64623 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64631 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64700 - "POST /api/kb/upload-file HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64742 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64745 - "GET /api/kb/documents/doc_b7ad6f973a74?kb_id=default HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:64756 - "POST /api/rag/inspect HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64837 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64812 - "POST /api/rag/inspect HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64911 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64921 - "POST /api/rag/inspect HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65026 - "GET /api/users HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65031 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65039 - "GET /api/kb/documents/doc_b7ad6f973a74?kb_id=default HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:65080 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65086 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65088 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65091 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65093 - "GET /api/kb/documents/doc_b7ad6f973a74?kb_id=default HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:65114 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65117 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65120 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65124 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65127 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65130 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65134 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65137 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65140 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65143 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65145 - "GET /api/kb/documents?kb_id=default HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65147 - "GET /api/kb/documents/doc_b7ad6f973a74?kb_id=default HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:65155 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65160 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65163 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [42014]

@@ -24,6 +24,32 @@ from .schemas import (
 
 router = APIRouter()
 
+def _chunk_text(text: str, chunk_size: int = 800, chunk_overlap: int = 100) -> list[str]:
+    """Simple text chunker — splits by paragraphs, then by chunk_size."""
+    if not text:
+        return []
+    paragraphs = text.split("\n\n")
+    chunks: list[str] = []
+    current = ""
+    for para in paragraphs:
+        if len(current) + len(para) + 2 <= chunk_size:
+            current = (current + "\n\n" + para).strip()
+        else:
+            if current:
+                chunks.append(current)
+            if len(para) > chunk_size:
+                for i in range(0, len(para), chunk_size - chunk_overlap):
+                    chunk = para[i : i + chunk_size]
+                    if chunk:
+                        chunks.append(chunk)
+                current = ""
+            else:
+                current = para
+    if current:
+        chunks.append(current)
+    return chunks
+
+
 _agent_graph = None
 _agent_graph_lock = threading.Lock()
 
@@ -382,13 +408,8 @@ async def upload_document(body: KBUploadRequest, current_user: dict = Depends(ge
 
     try:
         from ..retrievers.vector import VectorRetriever
-        from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-        splitter = RecursiveCharacterTextSplitter(
-            chunk_size=body.chunk_size,
-            chunk_overlap=body.chunk_overlap,
-        )
-        chunks = splitter.split_text(body.content)
+        chunks = _chunk_text(body.content, body.chunk_size, body.chunk_overlap)
 
         docs = []
         for i, chunk in enumerate(chunks):
@@ -406,6 +427,8 @@ async def upload_document(body: KBUploadRequest, current_user: dict = Depends(ge
 
         retriever = VectorRetriever()
         retriever.add_documents(docs)
+        from ..retrievers.bm25 import BM25Retriever
+        BM25Retriever().refresh()
         doc["chunk_count"] = len(chunks)
     except Exception as e:
         pass
@@ -483,13 +506,8 @@ async def upload_file(
 
     try:
         from ..retrievers.vector import VectorRetriever
-        from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-        splitter = RecursiveCharacterTextSplitter(
-            chunk_size=chunk_size,
-            chunk_overlap=chunk_overlap,
-        )
-        chunks = splitter.split_text(content)
+        chunks = _chunk_text(content, chunk_size, chunk_overlap)
 
         docs = []
         for i, chunk in enumerate(chunks):
@@ -508,6 +526,8 @@ async def upload_file(
 
         retriever = VectorRetriever()
         retriever.add_documents(docs)
+        from ..retrievers.bm25 import BM25Retriever
+        BM25Retriever().refresh()
         doc["chunk_count"] = len(chunks)
     except Exception:
         pass
@@ -540,6 +560,27 @@ async def list_documents(kb_id: str = "default", current_user: dict = Depends(ge
     }
 
 
+@router.get("/kb/documents/{doc_id}")
+async def get_document(
+    doc_id: str,
+    kb_id: str = "default",
+    current_user: dict = Depends(get_current_user),
+):
+    """Get a single document with its content for preview."""
+    docs = _kb_documents.get(kb_id, [])
+    doc = next((d for d in docs if d["doc_id"] == doc_id), None)
+    if doc is None:
+        raise HTTPException(status_code=404, detail="Document not found")
+    return {
+        "doc_id": doc["doc_id"],
+        "title": doc["title"],
+        "content": doc.get("content", ""),
+        "chunk_count": doc["chunk_count"],
+        "created_at": doc["created_at"],
+        "metadata": doc.get("metadata", {}),
+    }
+
+
 @router.delete("/kb/documents/{doc_id}")
 async def delete_document(doc_id: str, kb_id: str = "default", current_user: dict = Depends(get_current_user)):
     """Delete a document from the KB."""
@@ -550,6 +591,8 @@ async def delete_document(doc_id: str, kb_id: str = "default", current_user: dic
         from ..retrievers.vector import VectorRetriever
         retriever = VectorRetriever()
         retriever.delete_documents([doc_id])
+        from ..retrievers.bm25 import BM25Retriever
+        BM25Retriever().refresh()
     except Exception:
         pass
 

@@ -13,28 +13,56 @@ _chroma_dir = _project_root / "data" / "chroma"
 
 
 class VectorRetriever:
-    """Vector similarity search with ChromaDB, falling back to in-memory store."""
+    """Vector similarity search with ChromaDB, falling back to in-memory store.
+
+    Uses class-level shared state so that when Chroma is unavailable,
+    all instances share the same in-memory document store.
+    """
+
+    _shared_in_memory_docs: list[dict] = []
+    _shared_collection: Any = None
+    _shared_client: Any = None
+    _chroma_available: bool | None = None
 
     def __init__(self) -> None:
-        self._chroma_client: Any = None
-        self._collection: Any = None
         self._embeddings = get_embeddings()
         self._settings = get_settings()
-        self._in_memory_docs: list[dict] = []
-        self._chroma_available: bool | None = None
+
+    @property
+    def _collection(self) -> Any:
+        return VectorRetriever._shared_collection
+
+    @_collection.setter
+    def _collection(self, value: Any) -> None:
+        VectorRetriever._shared_collection = value
+
+    @property
+    def _chroma_client(self) -> Any:
+        return VectorRetriever._shared_client
+
+    @_chroma_client.setter
+    def _chroma_client(self, value: Any) -> None:
+        VectorRetriever._shared_client = value
+
+    @property
+    def _in_memory_docs(self) -> list[dict]:
+        return VectorRetriever._shared_in_memory_docs
+
+    @_in_memory_docs.setter
+    def _in_memory_docs(self, value: list[dict]) -> None:
+        VectorRetriever._shared_in_memory_docs = value
 
     @property
     def chroma_available(self) -> bool:
-        if self._chroma_available is not None:
-            return self._chroma_available
+        if VectorRetriever._chroma_available is not None:
+            return VectorRetriever._chroma_available
         try:
             import chromadb
-            from chromadb.config import Settings as ChromaSettings
 
-            self._chroma_available = True
+            VectorRetriever._chroma_available = True
         except ImportError:
-            self._chroma_available = False
-        return self._chroma_available
+            VectorRetriever._chroma_available = False
+        return VectorRetriever._chroma_available
 
     def _ensure_connection(self) -> None:
         if not self.chroma_available:

@@ -18,6 +18,7 @@ export async function connectChat(
   onEvent: (event: SSEEvent) => void,
   onDone: () => void,
   onError: (err: any) => void,
+  signal?: AbortSignal,
 ): Promise<void> {
   const authStore = useAuthStore()
   const token = authStore.token
@@ -36,6 +37,7 @@ export async function connectChat(
         message,
         thread_id: threadId,
       }),
+      signal,
     })
 
     if (!response.ok || !response.body) {
@@ -47,6 +49,10 @@ export async function connectChat(
     let buffer = ''
 
     while (true) {
+      if (signal?.aborted) {
+        reader.cancel()
+        break
+      }
       const { done, value } = await reader.read()
       if (done) break
 
@@ -73,7 +79,11 @@ export async function connectChat(
 
     onDone()
   } catch (err) {
-    onError(err)
+    if (signal?.aborted) {
+      onDone()
+    } else {
+      onError(err)
+    }
   }
 }
 
