@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 import json
+from langgraph.graph.state import CompiledStateGraph
 import threading
+import time
 import uuid
 from datetime import datetime
-from typing import AsyncIterator
+from typing import Any, AsyncIterator
 
 from fastapi import APIRouter, Depends, HTTPException, Request, File, UploadFile, Form
 from sse_starlette.sse import EventSourceResponse
@@ -23,6 +25,29 @@ from .schemas import (
 )
 
 router = APIRouter()
+
+def _extract_hitl_payload(interrupt_data) -> dict:
+    """Extract HITL review payload from LangGraph interrupt data."""
+    payload = {"review_id": "", "tool": "", "args": {}, "reason": ""}
+    if isinstance(interrupt_data, list) and interrupt_data:
+        interrupt = interrupt_data[0]
+        if hasattr(interrupt, "value"):
+            value = interrupt.value
+            payload = {
+                "review_id": value.get("review_id", ""),
+                "tool": value.get("tool", ""),
+                "args": value.get("args", {}),
+                "reason": value.get("reason", ""),
+            }
+    elif isinstance(interrupt_data, dict):
+        payload = {
+            "review_id": interrupt_data.get("review_id", ""),
+            "tool": interrupt_data.get("tool", ""),
+            "args": interrupt_data.get("args", {}),
+            "reason": interrupt_data.get("reason", ""),
+        }
+    return payload
+
 
 def _chunk_text(text: str, chunk_size: int = 800, chunk_overlap: int = 100) -> list[str]:
     """Simple text chunker — splits by paragraphs, then by chunk_size."""
@@ -124,7 +149,7 @@ async def chat(body: ChatRequest, current_user: dict = Depends(get_current_user)
     - done: {answer, thread_id, intent} — final answer (full text, includes streamed tokens)
     - error: {message} — error event
     """
-    agent = get_agent_graph()
+    agent: CompiledStateGraph[Any, None, Any, Any] = get_agent_graph()
 
     thread_id = body.thread_id or str(uuid.uuid4())
     user_id = current_user.get("sub", body.user_id or "anonymous")
@@ -169,62 +194,76 @@ async def chat(body: ChatRequest, current_user: dict = Depends(get_current_user)
         "compressed_history": "",
         "conversation_summary": prev_summary,
         "rewritten_query": "",
+        "sub_queries": [],
         "intent": "unknown",
         "tool_plan": [],
         "rag_context": "",
         "rag_draft": "",
         "tool_results": [],
         "hitl_reviews": [],
+        "assembled_context": "",
         "final_answer": "",
         "metadata": {},
     }
 
     async def event_generator() -> AsyncIterator[dict]:
         thread_config = {"configurable": {"thread_id": thread_id}}
+        start_ts = time.monotonic()
 
         try:
-            result = await agent.ainvoke(initial_state, config=thread_config)
+            # 立即推送状态事件，让用户马上看到"正在检索"，避免空白等待的感知。
+            yield {
+                "event": "status",
+                "data": json.dumps({
+                    "stage": "thinking",
+                    "message": "正在为您检索保险知识库…",
+                }, ensure_ascii=False),
+            }
 
-            if "__interrupt__" in result:
-                interrupt_data = result["__interrupt__"]
-                hitl_payload = {
-                    "review_id": "",
-                    "tool": "",
-                    "args": {},
-                    "reason": "",
-                }
-                if isinstance(interrupt_data, list) and interrupt_data:
-                    interrupt = interrupt_data[0]
-                    if hasattr(interrupt, 'value'):
-                        value = interrupt.value
-                        hitl_payload = {
-                            "review_id": value.get("review_id", ""),
-                            "tool": value.get("tool", ""),
-                            "args": value.get("args", {}),
-                            "reason": value.get("reason", ""),
+            # 真流式：messages 模式实时捕获 final_generate 的 LLM token，
+            # values 模式拿到完整状态（含 HITL interrupt），不再等全图跑完。
+            final_state: dict | None = None
+            interrupted = False
+
+            async for mode, data in agent.astream(
+                initial_state,
+                config=thread_config,
+                stream_mode=["values", "messages"],
+            ):
+                if mode == "values":
+                    final_state = data
+                    if "__interrupt__" in data:
+                        interrupted = True
+                        hitl_payload = _extract_hitl_payload(data["__interrupt__"])
+                        yield {
+                            "event": "hitl_review",
+                            "data": json.dumps(hitl_payload, ensure_ascii=False),
                         }
-                elif isinstance(interrupt_data, dict):
-                    hitl_payload = {
-                        "review_id": interrupt_data.get("review_id", ""),
-                        "tool": interrupt_data.get("tool", ""),
-                        "args": interrupt_data.get("args", {}),
-                        "reason": interrupt_data.get("reason", ""),
-                    }
+                        break
+                elif mode == "messages":
+                    msg_chunk, metadata = data
+                    if metadata.get("langgraph_node") == "final_generate":
+                        content = getattr(msg_chunk, "content", "")
+                        if content:
+                            yield {
+                                "event": "token",
+                                "data": json.dumps({"content": content}, ensure_ascii=False),
+                            }
 
-                yield {
-                    "event": "hitl_review",
-                    "data": json.dumps(hitl_payload, ensure_ascii=False),
-                }
+            if interrupted:
                 yield {
                     "event": "done",
                     "data": json.dumps({
                         "answer": "（请先完成人工审核后继续对话）",
                         "thread_id": thread_id,
                         "intent": "hitl_pending",
+                        "elapsed_seconds": round(time.monotonic() - start_ts, 1),
+                        "server_timestamp": datetime.utcnow().isoformat() + "Z",
                     }, ensure_ascii=False),
                 }
                 return
 
+            result = final_state or {}
             answer = result.get("final_answer", "")
             if not answer:
                 answer = result.get("rag_draft", "")
@@ -235,22 +274,14 @@ async def chat(body: ChatRequest, current_user: dict = Depends(get_current_user)
             if not answer:
                 answer = "抱歉，我无法回答您的问题。"
 
-            import asyncio
-            CHUNK_SIZE = 4
-            for i in range(0, len(answer), CHUNK_SIZE):
-                chunk = answer[i : i + CHUNK_SIZE]
-                yield {
-                    "event": "token",
-                    "data": json.dumps({"content": chunk}, ensure_ascii=False),
-                }
-                await asyncio.sleep(0.003)
-
             yield {
                 "event": "done",
                 "data": json.dumps({
                     "answer": answer,
                     "thread_id": thread_id,
                     "intent": result.get("intent", ""),
+                    "elapsed_seconds": round(time.monotonic() - start_ts, 1),
+                    "server_timestamp": datetime.utcnow().isoformat() + "Z",
                 }, ensure_ascii=False),
             }
 
@@ -597,6 +628,49 @@ async def delete_document(doc_id: str, kb_id: str = "default", current_user: dic
         pass
 
     return {"status": "deleted", "doc_id": doc_id}
+
+
+@router.post("/kb/sync")
+async def sync_kb(current_user: dict = Depends(get_current_user)):
+    """Rebuild vector store from _kb_documents (cleans stale data)."""
+    from ..retrievers.vector import VectorRetriever
+    from ..retrievers.bm25 import BM25Retriever
+
+    VectorRetriever._shared_in_memory_docs = []
+
+    total_chunks = 0
+    for kb_id, docs in _kb_documents.items():
+        for doc in docs:
+            content = doc.get("content", "")
+            if not content:
+                continue
+            chunks = _chunk_text(content, chunk_size=800, chunk_overlap=100)
+            chunk_docs = []
+            for i, chunk in enumerate(chunks):
+                chunk_docs.append({
+                    "id": f"{doc['doc_id']}_chunk_{i}",
+                    "content": chunk,
+                    "metadata": {
+                        "source": doc["doc_id"],
+                        "title": doc["title"],
+                        "chunk_index": i,
+                        "kb_id": kb_id,
+                    },
+                })
+            if chunk_docs:
+                retriever = VectorRetriever()
+                retriever.add_documents(chunk_docs)
+                total_chunks += len(chunk_docs)
+
+    BM25Retriever._initialized = False
+    BM25Retriever._shared_bm25 = None
+    BM25Retriever._shared_docs = []
+
+    return {
+        "status": "synced",
+        "documents": sum(len(v) for v in _kb_documents.values()),
+        "chunks": total_chunks,
+    }
 
 
 @router.post("/rag/inspect")

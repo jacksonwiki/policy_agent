@@ -48,6 +48,23 @@ export async function connectChat(
     const decoder = new TextDecoder()
     let buffer = ''
 
+    // Standard SSE parsing state.
+    let eventName = 'message'
+    let dataLines: string[] = []
+
+    const flushEvent = () => {
+      if (dataLines.length === 0) return
+      const dataStr = dataLines.join('\n')
+      dataLines = []
+      try {
+        const data = JSON.parse(dataStr)
+        onEvent({ event: eventName, data })
+      } catch {
+        onEvent({ event: eventName, data: dataStr })
+      }
+      eventName = 'message'
+    }
+
     while (true) {
       if (signal?.aborted) {
         reader.cancel()
@@ -58,24 +75,26 @@ export async function connectChat(
 
       buffer += decoder.decode(value, { stream: true })
       const lines = buffer.split('\n')
+      // Keep the last (possibly incomplete) line in the buffer.
       buffer = lines.pop() || ''
 
       for (const line of lines) {
         if (line.startsWith('event:')) {
-          const eventType = line.slice(6).trim()
-          const dataLine = lines.find((l) => l.startsWith('data:'))
-          if (dataLine) {
-            const dataStr = dataLine.slice(5).trim()
-            try {
-              const data = JSON.parse(dataStr)
-              onEvent({ event: eventType, data })
-            } catch {
-              onEvent({ event: eventType, data: dataStr })
-            }
-          }
+          // New event header: flush any previous event first.
+          flushEvent()
+          eventName = line.slice(6).trim()
+        } else if (line.startsWith('data:')) {
+          dataLines.push(line.slice(5).trimStart())
+        } else if (line.trim() === '') {
+          // Empty line terminates the current event.
+          flushEvent()
         }
+        // Ignore other fields (id, retry, comments, etc.).
       }
     }
+
+    // Flush any trailing event when the stream ends.
+    flushEvent()
 
     onDone()
   } catch (err) {

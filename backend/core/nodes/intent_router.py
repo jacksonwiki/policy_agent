@@ -2,11 +2,15 @@
 from __future__ import annotations
 
 import json
+import logging
+import time
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from ..state import AgentState
 from ...llm import get_llm, TaskType
+
+logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """你是一个保险智能助手的意图路由器。请判断用户的问题需要：
 
@@ -37,6 +41,10 @@ RAG_KEYWORDS = [
     "什么是", "怎么", "如何", "条款", "流程", "介绍",
     "保障", "责任", "除外", "免赔", "犹豫期",
     "解释", "说明", "对比", "区别",
+    # 知识库 / 产品枚举类问题（避免走 LLM 判定）
+    "知识库", "知识", "产品", "险种",
+    "有哪些", "哪几款", "有什么", "哪些", "几款",
+    "几种", "多少种", "包含", "包括",
 ]
 
 
@@ -56,6 +64,7 @@ def _keyword_fallback(query: str) -> str | None:
 
 def route_intent(state: AgentState) -> dict:
     """Route user intent to rag / tool / both / chitchat."""
+    t0 = time.monotonic()
     user_query = state.get("user_query", "")
     rewritten = state.get("rewritten_query", user_query)
 
@@ -65,6 +74,16 @@ def route_intent(state: AgentState) -> dict:
     # Also check original query for keywords
     kw_result_orig = _keyword_fallback(user_query)
 
+    # 关键词已能确定意图时直接返回，跳过 LLM（省一次 HEAVY 调用）。
+    # 绝大多数业务问题（含"流程/条款/怎么/我的保单"等）都会命中关键词。
+    if kw_result:
+        logger.info(f"[latency] route_intent(keyword) cost={time.monotonic()-t0:.2f}s")
+        return {"intent": kw_result}
+    if kw_result_orig:
+        logger.info(f"[latency] route_intent(keyword) cost={time.monotonic()-t0:.2f}s")
+        return {"intent": kw_result_orig}
+
+    # 关键词未命中才走 LLM（闲聊、模糊表达等）
     try:
         llm = get_llm(TaskType.HEAVY)
         response = llm.invoke([
@@ -86,14 +105,9 @@ def route_intent(state: AgentState) -> dict:
     except Exception:
         intent = "unknown"
 
-    # Merge: keyword result takes precedence
     final_intent = intent
-    if kw_result:
-        final_intent = kw_result
-    elif kw_result_orig:
-        final_intent = kw_result_orig
-
     if final_intent not in ("rag", "tool", "both", "chitchat"):
         final_intent = "chitchat"
 
+    logger.info(f"[latency] route_intent(llm) cost={time.monotonic()-t0:.2f}s")
     return {"intent": final_intent}

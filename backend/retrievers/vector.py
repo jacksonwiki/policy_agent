@@ -1,6 +1,9 @@
 """Vector retriever with ChromaDB backend."""
 from __future__ import annotations
 
+import hashlib
+import re
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -10,6 +13,24 @@ from ..llm.embeddings import get_embeddings
 
 _project_root = Path(__file__).resolve().parent.parent.parent
 _chroma_dir = _project_root / "data" / "chroma"
+
+
+def _content_fingerprint(text: str) -> str:
+    """内容指纹：去除空白后取 MD5，用于跨文档内容级去重。
+
+    同一文档重复上传（或内容完全相同的两个 chunk）会得到相同指纹，
+    在融合/去重环节用于合并，避免 RRF 分数叠加导致结果失真。
+    """
+    normalized = re.sub(r"\s+", "", text or "").strip()
+    return hashlib.md5(normalized.encode("utf-8")).hexdigest()
+
+
+def _doc_key(doc: dict) -> str:
+    """检索结果的去重键：优先用内容指纹，空内容回退到 id。"""
+    content = doc.get("content", "")
+    if content and content.strip():
+        return f"content:{_content_fingerprint(content)}"
+    return f"id:{doc.get('id', '')}"
 
 
 class VectorRetriever:
@@ -23,6 +44,9 @@ class VectorRetriever:
     _shared_collection: Any = None
     _shared_client: Any = None
     _chroma_available: bool | None = None
+    # 多线程并发检索（sub_queries 并行召回）时，首次建连可能被多个线程
+    # 同时触发，必须加锁防止重复创建 PersistentClient 导致连接损坏。
+    _connection_lock = threading.Lock()
 
     def __init__(self) -> None:
         self._embeddings = get_embeddings()
@@ -70,32 +94,37 @@ class VectorRetriever:
         if self._collection is not None:
             return
 
-        try:
-            import chromadb
-            from chromadb.config import Settings as ChromaSettings
+        # double-checked locking：避免多线程同时进入建连逻辑
+        with VectorRetriever._connection_lock:
+            if self._collection is not None:
+                return
 
-            _chroma_dir.mkdir(parents=True, exist_ok=True)
+            try:
+                import chromadb
+                from chromadb.config import Settings as ChromaSettings
 
-            self._chroma_client = chromadb.PersistentClient(
-                path=str(_chroma_dir),
-                settings=ChromaSettings(anonymized_telemetry=False),
-            )
+                _chroma_dir.mkdir(parents=True, exist_ok=True)
 
-            collection_name = self._settings.chroma_collection
+                self._chroma_client = chromadb.PersistentClient(
+                    path=str(_chroma_dir),
+                    settings=ChromaSettings(anonymized_telemetry=False),
+                )
 
-            self._collection = self._chroma_client.get_or_create_collection(
-                name=collection_name,
-                metadata={"hnsw:space": "cosine"},
-            )
-        except Exception as e:
-            print(f"[chroma] Connection failed: {e}")
-            self._chroma_available = False
+                collection_name = self._settings.chroma_collection
 
-    def retrieve(self, query: str, top_k: int = 20) -> list[dict]:
+                self._collection = self._chroma_client.get_or_create_collection(
+                    name=collection_name,
+                    metadata={"hnsw:space": "cosine"},
+                )
+            except Exception as e:
+                print(f"[chroma] Connection failed: {e}")
+                self._chroma_available = False
+
+    def retrieve(self, query: str, top_k: int = 20, min_score: float = 0.3) -> list[dict]:
         self._ensure_connection()
 
         if self._collection is None or self._collection.count() == 0:
-            return self._retrieve_in_memory(query, top_k)
+            return self._retrieve_in_memory(query, top_k, min_score)
 
         try:
             query_embedding = self._embeddings.embed_query(query)
@@ -113,6 +142,8 @@ class VectorRetriever:
 
             for i in range(len(ids)):
                 score = 1.0 - distances[i] if i < len(distances) else 0.0
+                if score < min_score:
+                    continue
                 docs.append({
                     "id": ids[i],
                     "content": documents[i] if i < len(documents) else "",
@@ -121,9 +152,9 @@ class VectorRetriever:
                 })
             return docs
         except Exception:
-            return self._retrieve_in_memory(query, top_k)
+            return self._retrieve_in_memory(query, top_k, min_score)
 
-    def _retrieve_in_memory(self, query: str, top_k: int) -> list[dict]:
+    def _retrieve_in_memory(self, query: str, top_k: int, min_score: float = 0.3) -> list[dict]:
         if not self._in_memory_docs:
             return []
 
@@ -145,6 +176,8 @@ class VectorRetriever:
                 continue
 
             similarity = self._cosine_similarity(query_embedding, doc_embedding)
+            if similarity < min_score:
+                continue
             scored_docs.append({
                 "id": doc.get("id", ""),
                 "content": doc.get("content", ""),
@@ -169,6 +202,27 @@ class VectorRetriever:
     def add_documents(self, documents: list[dict]) -> None:
         if not documents:
             return
+
+        # 内容级去重：跳过已在库中或本批内重复的内容，防止重复文档
+        # 在 RRF 融合阶段分数叠加、挤占正确结果。
+        existing_fps: set[str] = set()
+        try:
+            for d in self.get_all_documents():
+                existing_fps.add(_content_fingerprint(d.get("content", "")))
+        except Exception:
+            pass
+
+        unique: list[dict] = []
+        for d in documents:
+            fp = _content_fingerprint(d.get("content", ""))
+            if not fp or fp in existing_fps:
+                continue
+            existing_fps.add(fp)
+            unique.append(d)
+
+        if not unique:
+            return
+        documents = unique
 
         self._ensure_connection()
 
@@ -204,11 +258,20 @@ class VectorRetriever:
                 self._in_memory_docs.append(doc)
 
     def delete_documents(self, ids: list[str]) -> None:
-        self._in_memory_docs = [d for d in self._in_memory_docs if d.get("id") not in ids]
+        self._in_memory_docs = [
+            d for d in self._in_memory_docs
+            if not any(d.get("id", "").startswith(prefix) for prefix in ids)
+        ]
 
         if self._collection is not None:
             try:
-                self._collection.delete(ids=ids)
+                all_ids = self._collection.get(include=[])
+                matching = [
+                    i for i in all_ids.get("ids", [])
+                    if any(i.startswith(prefix) for prefix in ids)
+                ]
+                if matching:
+                    self._collection.delete(ids=matching)
             except Exception:
                 pass
 

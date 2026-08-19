@@ -1,3 +1,4 @@
+README.md
 pyproject.toml
 backend/api/__init__.py
 backend/api/auth.py
@@ -22,6 +23,7 @@ backend/llm/__init__.py
 backend/llm/deepseek_client.py
 backend/llm/embeddings.py
 backend/llm/local_qwen_client.py
+backend/llm/qwen_client.py
 backend/llm/router.py
 backend/policy_agent.egg-info/PKG-INFO
 backend/policy_agent.egg-info/SOURCES.txt

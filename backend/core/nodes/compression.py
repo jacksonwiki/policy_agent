@@ -9,11 +9,15 @@ Strategy:
 """
 from __future__ import annotations
 
+import logging
+import time
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 
 from ..state import AgentState
 from ...config import get_settings
 from ...llm import get_llm, TaskType
+
+logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """你是一个对话历史摘要助手。请将以下对话历史压缩为简洁的中文摘要，保留：
 1. 用户的核心需求和意图
@@ -70,6 +74,7 @@ def compress_conversation(state: AgentState) -> dict:
                                    (summary + recent window).
         conversation_summary: str — the updated rolling summary.
     """
+    t0 = time.monotonic()
     settings = get_settings()
     messages = state.get("messages", [])
     existing_summary = state.get("conversation_summary", "")
@@ -119,6 +124,7 @@ def compress_conversation(state: AgentState) -> dict:
 
     compressed_history = "\n\n".join(parts)
 
+    logger.info(f"[latency] compress_conversation cost={time.monotonic()-t0:.2f}s")
     return {
         "compressed_history": compressed_history,
         "conversation_summary": new_summary,

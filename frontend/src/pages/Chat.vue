@@ -53,8 +53,12 @@
               <el-icon v-else :size="18"><Robot /></el-icon>
             </div>
             <div class="bubble-wrap">
+              <div v-if="msg.timestamp" class="msg-time">{{ formatMsgTime(msg.timestamp) }}</div>
               <div v-if="msg.content" class="bubble" :class="msg.role">
                 <div class="bubble-inner" v-html="formatContent(msg.content)"></div>
+              </div>
+              <div v-if="msg.role === 'assistant' && msg.elapsed" class="bubble-meta">
+                耗时 {{ msg.elapsed.toFixed(1) }}s
               </div>
               <HitlCard
                 v-if="msg.hitlReview"
@@ -73,6 +77,7 @@
                 <div class="typing-dots">
                   <span></span><span></span><span></span>
                 </div>
+                <div v-if="thinkingStatus" class="typing-status">{{ thinkingStatus }}</div>
               </div>
             </div>
           </div>
@@ -116,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted, markRaw } from 'vue'
+import { ref, nextTick, onMounted } from 'vue'
 import { VideoPause } from '@element-plus/icons-vue'
 import { connectChat, type SSEEvent } from '../api/sse'
 import HitlCard from '../components/HitlCard.vue'
@@ -125,6 +130,8 @@ import api from '../api/client'
 interface ChatMessage {
   role: 'user' | 'assistant'
   content?: string
+  elapsed?: number
+  timestamp?: string
   hitlReview?: {
     review_id: string
     tool: string
@@ -151,6 +158,7 @@ const streaming = ref(false)
 const historyRef = ref()
 const conversations = ref<Conversation[]>([])
 const currentAnswer = ref('')
+const thinkingStatus = ref('')
 const abortController = ref<AbortController | null>(null)
 
 function generateThreadId() {
@@ -214,7 +222,7 @@ async function sendMessage() {
   if (!threadId.value) {
     threadId.value = generateThreadId()
   }
-  messages.value.push({ role: 'user', content: text })
+  messages.value.push({ role: 'user', content: text, timestamp: new Date().toISOString() })
   await sendMessageText(text)
   await loadConversations()
 }
@@ -257,7 +265,11 @@ async function sendMessageText(text: string) {
       text,
       (event: SSEEvent) => {
         const lastMsg = messages.value[messages.value.length - 1]
-        if (event.event === 'token') {
+        if (event.event === 'status') {
+          thinkingStatus.value = event.data?.message || '正在思考…'
+          scrollToBottom()
+        } else if (event.event === 'token') {
+          thinkingStatus.value = ''
           currentAnswer.value += event.data?.content || ''
           lastMsg.content = currentAnswer.value
           scrollToBottom()
@@ -266,16 +278,20 @@ async function sendMessageText(text: string) {
           lastMsg.content = ''
           scrollToBottom()
         } else if (event.event === 'done') {
+          thinkingStatus.value = ''
           lastMsg.content = event.data?.answer || currentAnswer.value
+          lastMsg.elapsed = event.data?.elapsed_seconds
+          lastMsg.timestamp = event.data?.server_timestamp || new Date().toISOString()
           if (event.data?.thread_id) {
             threadId.value = event.data.thread_id
             localStorage.setItem(STORAGE_KEY, threadId.value)
           }
         } else if (event.event === 'error') {
+          thinkingStatus.value = ''
           lastMsg.content = `错误: ${event.data?.message || '未知错误'}`
         }
       },
-      () => { streaming.value = false },
+      () => { streaming.value = false; thinkingStatus.value = '' },
       () => {
         streaming.value = false
         const lastMsg = messages.value[messages.value.length - 1]
@@ -323,6 +339,15 @@ function formatTime(iso: string) {
     if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`
     if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`
     return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+  } catch {
+    return ''
+  }
+}
+
+function formatMsgTime(iso: string) {
+  try {
+    const d = new Date(iso)
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`
   } catch {
     return ''
   }
@@ -657,6 +682,25 @@ onMounted(async () => {
   background: #b0b0bc;
   border-radius: 50%;
   animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-status {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #909399;
+}
+
+.bubble-meta {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #b0b0bc;
+  text-align: right;
+}
+
+.msg-time {
+  font-size: 12px;
+  color: #8c8c9e;
+  margin-bottom: 4px;
 }
 
 .typing-dots span:nth-child(1) { animation-delay: -0.32s; }

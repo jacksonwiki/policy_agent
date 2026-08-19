@@ -1,11 +1,15 @@
 """Reranker using Ollama bge-reranker-v2-m3 embedding model for relevance scoring."""
 from __future__ import annotations
 
+import logging
 import math
+import time
 
 import httpx
 
 from ..config import get_settings
+
+logger = logging.getLogger(__name__)
 
 
 class Reranker:
@@ -41,6 +45,7 @@ class Reranker:
         documents: list[dict],
         top_k: int | None = None,
     ) -> list[dict]:
+        t0 = time.monotonic()
         if not documents:
             return []
 
@@ -48,48 +53,90 @@ class Reranker:
 
         if self.model_available:
             try:
-                return self._embed_rerank(query, documents, k)
+                result = self._embed_rerank(query, documents, k)
+                logger.info(f"[latency] rerank(embed) cost={time.monotonic()-t0:.2f}s")
+                return result
             except Exception:
+                logger.info(f"[latency] rerank(embed-fail) cost={time.monotonic()-t0:.2f}s")
                 pass
 
-        return self._heuristic_rerank(query, documents, k)
+        result = self._heuristic_rerank(query, documents, k)
+        logger.info(f"[latency] rerank(heuristic) cost={time.monotonic()-t0:.2f}s")
+        return result
 
     def _embed_rerank(
         self, query: str, documents: list[dict], k: int
     ) -> list[dict]:
-        """Use Ollama bge-reranker-v2-m3 to embed query+doc pairs and compute relevance.
+        """Rerank via embedding cosine similarity fused with the RRF prior.
 
-        The model produces embeddings that encode the semantic relevance between
-        the query and each document. We embed "query [SEP] document" for each pair
-        and use the embedding norm as a relevance signal.
+        The embedding norm of a query-doc pair carries no relevance signal, so we
+        compute the cosine similarity between the query embedding and each document
+        embedding (semantic relevance), then blend it with the normalized RRF score
+        so the keyword/vector fusion prior is not discarded.
         """
-        client = httpx.Client(timeout=30.0)
+        client = httpx.Client(timeout=60.0)
         model = self._settings.rerank_model
         base_url = self._settings.ollama_base_url
 
-        # Build query-document pairs for cross-encoder style scoring
-        scored_docs: list[dict] = []
-        for doc in documents:
-            content = doc.get("content", "")
-            # Cross-encoder input: query + separator + document
-            pair_text = f"{query}\n{content}"
-
+        def _embed_batch(texts: list[str]) -> list[list[float]]:
+            # Ollama /api/embed 支持 input 传字符串数组，一次 HTTP 调用返回全部向量，
+            # 避免逐个文档串行请求（最多可省 19 次往返）。
             resp = client.post(
                 f"{base_url}/api/embed",
-                json={"model": model, "input": pair_text},
+                json={"model": model, "input": texts},
             )
             resp.raise_for_status()
             data = resp.json()
-            embedding = data.get("embeddings", [[]])[0]
+            return data.get("embeddings", []) or []
 
-            # Use embedding magnitude as relevance score
-            score = math.sqrt(sum(x * x for x in embedding)) if embedding else 0.0
+        try:
+            query_embs = _embed_batch([query])
+            query_emb = query_embs[0] if query_embs else []
+        except Exception:
+            return self._heuristic_rerank(query, documents, k)
+        if not query_emb:
+            return self._heuristic_rerank(query, documents, k)
+
+        contents = [doc.get("content", "") for doc in documents]
+        try:
+            doc_embs = _embed_batch(contents)
+        except Exception:
+            # 批量失败时逐条兜底，避免整批结果丢失
+            doc_embs = []
+            for c in contents:
+                try:
+                    doc_embs.append(_embed_batch([c])[0])
+                except Exception:
+                    doc_embs.append([])
+
+        scored_docs: list[dict] = []
+        for doc, doc_emb in zip(documents, doc_embs):
+            if not doc_emb:
+                continue
+
+            cosine = self._cosine_similarity(query_emb, doc_emb)
+            # 融合 RRF 先验（归一化），避免语义相近但关键词不匹配的噪声文档反超。
+            # 只取 rrf_score：原始 vector/bm25 分数量纲不可比，混用会主导排序。
+            prior = doc.get("rrf_score", 0) or 0.0
+            prior_norm = min(1.0, prior * 20.0)
+
             d = dict(doc)
-            d["rerank_score"] = score
+            d["rerank_score"] = cosine * 0.7 + prior_norm * 0.3
             scored_docs.append(d)
 
         scored_docs.sort(key=lambda x: x["rerank_score"], reverse=True)
         return scored_docs[:k]
+
+    @staticmethod
+    def _cosine_similarity(a: list[float], b: list[float]) -> float:
+        if not a or not b or len(a) != len(b):
+            return 0.0
+        dot = sum(x * y for x, y in zip(a, b))
+        norm_a = math.sqrt(sum(x * x for x in a))
+        norm_b = math.sqrt(sum(x * x for x in b))
+        if norm_a == 0 or norm_b == 0:
+            return 0.0
+        return dot / (norm_a * norm_b)
 
     def _heuristic_rerank(
         self, query: str, documents: list[dict], k: int
@@ -108,7 +155,7 @@ class Reranker:
                 len(query_chars), 1
             )
 
-            existing_score = doc.get("score", 0)
+            existing_score = doc.get("rrf_score", 0) or 0.0
             combined_score = existing_score * 0.6 + char_overlap * 0.4
 
             d["rerank_score"] = combined_score

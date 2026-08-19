@@ -1,13 +1,14 @@
 """RAG sub-graph: query rewrite → multi-retrieval → RRF → rerank → context → draft."""
 from __future__ import annotations
 
-from typing import Any, Annotated, TypedDict
+from concurrent.futures import ThreadPoolExecutor
+from typing import Annotated, TypedDict
 
 from langgraph.graph import StateGraph, END
 
 from ...config import get_settings
 from ...llm import get_llm, TaskType
-from ...retrievers.vector import VectorRetriever
+from ...retrievers.vector import VectorRetriever, _doc_key
 from ...retrievers.bm25 import BM25Retriever
 from ...retrievers.rerank import Reranker
 
@@ -17,6 +18,7 @@ def _merge_inspect(existing: dict, new: dict) -> dict:
 
 
 class RagSubState(TypedDict):
+    user_query: str
     rewritten_query: str
     sub_queries: list[str]
     vector_docs: list[dict]
@@ -25,14 +27,40 @@ class RagSubState(TypedDict):
     reranked_docs: list[dict]
     context: str
     draft_answer: str
+    skip_draft: bool
     inspect_trace: Annotated[dict, _merge_inspect]
 
 
+def _dedupe_sub_queries(state: RagSubState) -> list[str]:
+    """去重 sub_queries：LLM 拆分的子问题常与主问题/同义词重复，避免重复 embedding。"""
+    settings = get_settings()
+    sub_queries = state.get("sub_queries") or []
+    seen: set[str] = set()
+    out: list[str] = []
+    for sq in sub_queries:
+        norm = (sq or "").strip()
+        if not norm or norm in seen:
+            continue
+        seen.add(norm)
+        out.append(norm)
+    if not out:
+        out = [state.get("user_query", "")]
+    return out[: settings.agent_max_sub_queries]
+
+
 def _rag_query_rewrite(state: RagSubState) -> dict:
-    """Node 1: rewrite query + split into sub-queries for multi-retrieval."""
+    """Node 1: rewrite query + split into sub-queries for multi-retrieval.
+
+    主图已调用过 rewrite_query 并传入 rewritten_query/sub_queries 时直接复用，
+    避免同一个问题被重复改写（省一次 LIGHT LLM 调用）。
+    """
+    rewritten = state.get("rewritten_query", "")
+    sub_queries = state.get("sub_queries") or []
+    if rewritten and sub_queries:
+        return {"rewritten_query": rewritten, "sub_queries": sub_queries}
+
     from ...core.nodes.query_rewrite import rewrite_query
 
-    # Reuse the same rewrite logic but with sub_queries output
     result = rewrite_query({
         "user_query": state.get("user_query", ""),
         "compressed_history": "",
@@ -48,15 +76,25 @@ def _rag_vector_retrieval(state: RagSubState) -> dict:
     """Node 2a: parallel vector retrieval for each sub-query."""
     settings = get_settings()
     retriever = VectorRetriever()
-    sub_queries = state.get("sub_queries", [state.get("rewritten_query", "")])
+    sub_queries = _dedupe_sub_queries(state)
 
     all_docs: list[dict] = []
     seen_keys: set[str] = set()
 
-    for sq in sub_queries:
-        docs = retriever.retrieve(sq, top_k=settings.rag_top_k_retrieval)
+    def _retrieve(sq: str) -> list[dict]:
+        return retriever.retrieve(sq, top_k=settings.rag_top_k_retrieval)
+
+    # embedding 是本地 HTTP 调用，多路 sub_queries 用线程池并发可显著提速
+    if len(sub_queries) > 1:
+        max_workers = min(len(sub_queries), 4)
+        with ThreadPoolExecutor(max_workers=max_workers) as ex:
+            results = list(ex.map(_retrieve, sub_queries))
+    else:
+        results = [_retrieve(sq) for sq in sub_queries]
+
+    for docs in results:
         for d in docs:
-            key = d.get("id", d.get("content", "")[:50])
+            key = _doc_key(d)
             if key not in seen_keys:
                 seen_keys.add(key)
                 d["retrieval_source"] = "vector"
@@ -72,7 +110,7 @@ def _rag_bm25_retrieval(state: RagSubState) -> dict:
     """Node 2b: parallel BM25 retrieval for each sub-query."""
     try:
         retriever = BM25Retriever()
-        sub_queries = state.get("sub_queries", [state.get("rewritten_query", "")])
+        sub_queries = _dedupe_sub_queries(state)
 
         all_docs: list[dict] = []
         seen_keys: set[str] = set()
@@ -80,7 +118,7 @@ def _rag_bm25_retrieval(state: RagSubState) -> dict:
         for sq in sub_queries:
             docs = retriever.retrieve(sq, top_k=get_settings().rag_top_k_retrieval)
             for d in docs:
-                key = d.get("id", d.get("content", "")[:50])
+                key = _doc_key(d)
                 if key not in seen_keys:
                     seen_keys.add(key)
                     d["retrieval_source"] = "bm25"
@@ -118,7 +156,9 @@ def _rag_rrf_fusion(state: RagSubState) -> dict:
 
     for source, docs in source_docs.items():
         for rank, doc in enumerate(docs, start=1):
-            key = doc.get("id", doc.get("content", "")[:100])
+            # 用内容指纹作为融合键：重复入库的相同内容只计一次分，
+            # 避免相同内容在 RRF 中分数叠加、把正确结果挤出 top-N。
+            key = _doc_key(doc)
             rrf_score = 1.0 / (k + rank)
             doc_scores[key] = doc_scores.get(key, 0.0) + rrf_score
             if key not in doc_data:
@@ -130,6 +170,9 @@ def _rag_rrf_fusion(state: RagSubState) -> dict:
     for key in sorted_keys[:settings.rag_top_k_rrf]:
         d = dict(doc_data[key])
         d["rrf_score"] = doc_scores[key]
+        # 移除原始检索分数：vector(≈0.5) 与 bm25(可到 6+) 量纲不可比，
+        # 保留会污染下游重排的分数叠加，统一改用 rrf_score。
+        d.pop("score", None)
         rrf_docs.append(d)
 
     return {
@@ -139,12 +182,23 @@ def _rag_rrf_fusion(state: RagSubState) -> dict:
 
 
 def _rag_rerank(state: RagSubState) -> dict:
-    """Node 4: cross-encoder rerank top candidates → final top-N."""
+    """Node 4: cross-encoder rerank top candidates → final top-N.
+
+    rerank_enabled=False 时跳过 rerank 模型调用，直接取 RRF 融合结果的 top-N，
+    可省去 rerank 模型的 embedding 精排耗时（约 1-2s）。
+    """
     settings = get_settings()
     rrf_docs = state.get("rrf_docs", [])
 
     if not rrf_docs:
         return {"reranked_docs": [], "inspect_trace": {**state.get("inspect_trace", {}), "reranked_docs": []}}
+
+    if not settings.rerank_enabled:
+        reranked = rrf_docs[: settings.rerank_max_top_k]
+        return {
+            "reranked_docs": reranked,
+            "inspect_trace": {**state.get("inspect_trace", {}), "reranked_docs": reranked},
+        }
 
     try:
         reranker = Reranker()
@@ -241,7 +295,13 @@ def build_rag_subgraph(checkpointer=None) -> StateGraph:
     graph.add_edge("rag_bm25_retrieval", "rag_rrf_fusion")
     graph.add_edge("rag_rrf_fusion", "rag_rerank")
     graph.add_edge("rag_rerank", "rag_assemble_context")
-    graph.add_edge("rag_assemble_context", "rag_generate_draft")
+    # 主图调用时 skip_draft=True：草稿答案最终会被 final_generate 重新生成，
+    # 直接跳过可省一次 HEAVY LLM 调用；/rag/inspect 调试时保留草稿。
+    graph.add_conditional_edges(
+        "rag_assemble_context",
+        lambda s: "rag_generate_draft" if not s.get("skip_draft", False) else END,
+        {"rag_generate_draft": "rag_generate_draft", END: END},
+    )
     graph.add_edge("rag_generate_draft", END)
 
     graph.set_entry_point("rag_query_rewrite")

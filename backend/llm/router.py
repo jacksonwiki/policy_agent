@@ -41,6 +41,8 @@ _PROVIDER_FACTORIES: dict[str, Callable[[], BaseChatModel]] = {
 }
 
 _llm_cache: dict[str, BaseChatModel] = {}
+# 缓存已经失败的 provider，避免每次 LLM 调用都重复探测不可用的后端。
+_failed_providers: set[str] = set()
 
 
 def _is_mock_mode() -> bool:
@@ -87,6 +89,8 @@ def get_llm(task_type: TaskType | Literal["heavy", "light"] = TaskType.HEAVY) ->
     llm: BaseChatModel | None = None
     last_error: Exception | None = None
     for provider in chain:
+        if provider in _failed_providers:
+            continue
         factory = _PROVIDER_FACTORIES.get(provider)
         if factory is None:
             continue
@@ -95,6 +99,7 @@ def get_llm(task_type: TaskType | Literal["heavy", "light"] = TaskType.HEAVY) ->
             break
         except Exception as e:
             last_error = e
+            _failed_providers.add(provider)
             continue
 
     if llm is None:

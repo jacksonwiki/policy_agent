@@ -25,6 +25,8 @@ def get_deepseek_chat() -> BaseChatModel:
             model=settings.deepseek_model,
             temperature=settings.deepseek_temperature,
             max_tokens=settings.deepseek_max_tokens,
+            timeout=settings.deepseek_timeout,
+            max_retries=settings.deepseek_max_retries,
         )
     except ImportError:
         pass
@@ -40,4 +42,6 @@ def get_deepseek_chat() -> BaseChatModel:
         model=settings.deepseek_model,
         temperature=settings.deepseek_temperature,
         max_tokens=settings.deepseek_max_tokens,
+        timeout=settings.deepseek_timeout,
+        max_retries=settings.deepseek_max_retries,
     )

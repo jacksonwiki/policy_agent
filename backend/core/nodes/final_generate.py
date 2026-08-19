@@ -1,10 +1,15 @@
 """Final answer generation node — LLM produces the user-facing response."""
 from __future__ import annotations
 
+import logging
+import time
+
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 from ..state import AgentState
 from ...llm import get_llm, TaskType
+
+logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """你是一个专业、热情的保险智能助手。请根据提供的参考信息（对话历史+知识库+业务数据）回答用户的问题。
 
@@ -19,6 +24,7 @@ SYSTEM_PROMPT = """你是一个专业、热情的保险智能助手。请根据�
 
 def generate_final_answer(state: AgentState) -> dict:
     """Generate the final user-facing answer using the heavy LLM."""
+    t0 = time.monotonic()
     user_query = state.get("user_query", "")
     assembled = state.get("assembled_context", "")
     intent = state.get("intent", "chitchat")
@@ -51,4 +57,5 @@ def generate_final_answer(state: AgentState) -> dict:
         {"type": "ai", "content": answer}
     ]
 
+    logger.info(f"[latency] generate_final_answer cost={time.monotonic()-t0:.2f}s")
     return {"final_answer": answer, "messages": new_messages}

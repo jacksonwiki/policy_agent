@@ -1,19 +1,58 @@
-"""BM25 keyword retriever — uses rank-bm25 for in-memory BM25 scoring."""
+"""BM25 keyword retriever — in-memory Okapi BM25 with Chinese tokenization.
+
+Uses the rank_bm25 library (BM25Okapi) instead of a hand-written TF-IDF cosine
+implementation. BM25 rewards rare query terms (high IDF, e.g. "车险") and applies
+length normalisation via average document length, which significantly improves
+keyword discrimination compared to plain TF-IDF cosine similarity.
+"""
 from __future__ import annotations
 
 from typing import Any
 
+from rank_bm25 import BM25Okapi
+
 from ..config import get_settings
+
+_jieba_available = False
+try:
+    import jieba
+    _jieba_available = True
+except ImportError:
+    pass
+
+
+def _tokenize_chinese(text: str) -> list[str]:
+    if _jieba_available:
+        tokens = jieba.lcut(text)
+        return [t.strip().lower() for t in tokens if t.strip()]
+    chars = [c for c in text if '\u4e00' <= c <= '\u9fff']
+    bigrams = [chars[i] + chars[i + 1] for i in range(len(chars) - 1)] if len(chars) >= 2 else []
+    return bigrams or chars
+
+
+def _tokenize(text: str) -> list[str]:
+    tokens: list[str] = []
+    for seg in text.split():
+        has_chinese = any('\u4e00' <= c <= '\u9fff' for c in seg)
+        if has_chinese:
+            chinese_part = ''.join(c for c in seg if '\u4e00' <= c <= '\u9fff')
+            tokens.extend(_tokenize_chinese(chinese_part))
+            non_chinese = ''.join(c for c in seg if not '\u4e00' <= c <= '\u9fff')
+            if non_chinese:
+                tokens.append(non_chinese.lower())
+        else:
+            tokens.append(seg.lower())
+    return tokens
 
 
 class BM25Retriever:
-    """In-memory BM25 retriever.
+    """In-memory keyword retriever using Okapi BM25.
 
     Documents are loaded from VectorRetriever on first init and cached at class level
     so that all instances share the same index.
     """
 
-    _shared_bm25: Any = None
+    _shared_index: dict[str, Any] | None = None
     _shared_docs: list[dict] = []
     _initialized: bool = False
 
@@ -21,14 +60,8 @@ class BM25Retriever:
         pass
 
     def _initialize(self) -> None:
-        """Load all docs from VectorRetriever and build BM25 index (once)."""
         if BM25Retriever._initialized:
             return
-
-        try:
-            from rank_bm25 import BM25Okapi
-        except ImportError:
-            raise RuntimeError("rank-bm25 is not installed. Run: pip install rank-bm25")
 
         try:
             from .vector import VectorRetriever
@@ -36,36 +69,34 @@ class BM25Retriever:
             BM25Retriever._shared_docs = vr.get_all_documents()
 
             if not BM25Retriever._shared_docs:
+                BM25Retriever._shared_index = None
                 BM25Retriever._initialized = True
                 return
 
-            tokenized_corpus = [self._tokenize(d["content"]) for d in BM25Retriever._shared_docs]
-            BM25Retriever._shared_bm25 = BM25Okapi(tokenized_corpus)
+            corpus: list[list[str]] = [
+                _tokenize(d.get("content", "")) for d in BM25Retriever._shared_docs
+            ]
+            BM25Retriever._shared_index = {
+                "bm25": BM25Okapi(corpus, k1=1.5, b=0.75),
+            }
             BM25Retriever._initialized = True
 
         except Exception:
             BM25Retriever._initialized = True
 
-    @staticmethod
-    def _tokenize(text: str) -> list[str]:
-        """Simple tokenization: whitespace split + Chinese character fallback."""
-        tokens = text.split()
-        # For Chinese text, also add individual characters as tokens
-        # (rank-bm25 doesn't have a Chinese tokenizer built-in)
-        char_tokens = [c for c in text if '\u4e00' <= c <= '\u9fff']
-        return tokens + char_tokens
-
     def retrieve(self, query: str, top_k: int = 20) -> list[dict]:
-        """Retrieve top-k documents matching the query via BM25."""
         self._initialize()
 
-        if not BM25Retriever._shared_bm25 or not BM25Retriever._shared_docs:
+        if not BM25Retriever._shared_index or not BM25Retriever._shared_docs:
             return []
 
-        tokenized_query = self._tokenize(query)
-        scores = BM25Retriever._shared_bm25.get_scores(tokenized_query)
+        bm25: BM25Okapi = BM25Retriever._shared_index["bm25"]
 
-        # Sort by score descending
+        query_tokens = _tokenize(query)
+        if not query_tokens:
+            return []
+
+        scores = bm25.get_scores(query_tokens)
         ranked_indices = sorted(
             range(len(scores)),
             key=lambda i: scores[i],
@@ -83,7 +114,6 @@ class BM25Retriever:
         return results
 
     def refresh(self) -> None:
-        """Force reload of documents from VectorRetriever."""
         BM25Retriever._initialized = False
-        BM25Retriever._shared_bm25 = None
+        BM25Retriever._shared_index = None
         BM25Retriever._shared_docs = []

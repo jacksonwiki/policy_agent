@@ -42,6 +42,8 @@ class Settings(BaseSettings):
     deepseek_model: str = "deepseek-chat"
     deepseek_temperature: float = 0.3
     deepseek_max_tokens: int = 4096
+    deepseek_timeout: int = 30
+    deepseek_max_retries: int = 1
 
     # ── 本地 Ollama ───────────────────────────────────────
     ollama_base_url: str = "http://localhost:11434"
@@ -58,6 +60,10 @@ class Settings(BaseSettings):
     qwen_max_tokens: int = 4096
 
     # ── Rerank ────────────────────────────────────────────
+    # 重排序开关：默认关闭，开启后会在 RRF 融合结果上再跑一遍 rerank 模型精排
+    rerank_enabled: bool = Field(
+        default=False, json_schema_extra={"env": "RERANK_ENABLED"}
+    )
     rerank_model: str = "dengcao/bge-reranker-v2-m3"
     rerank_max_top_k: int = 5
 
@@ -78,8 +84,8 @@ class Settings(BaseSettings):
     hitl_timeout_minutes: int = 30
 
     # ── RAG 参数 ──────────────────────────────────────────
-    rag_top_k_retrieval: int = 20
-    rag_top_k_rrf: int = 20
+    rag_top_k_retrieval: int = 15
+    rag_top_k_rrf: int = 12
     rag_rrf_k: int = 60
     rag_chunk_size: int = 800
     rag_chunk_overlap: int = 100

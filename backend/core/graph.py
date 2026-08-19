@@ -38,27 +38,6 @@ from .nodes import (
 from .subgraphs import build_rag_subgraph, build_tool_subgraph
 
 
-# ── Merge helpers ─────────────────────────────────────────
-def _merge_rag_result(state: dict) -> dict:
-    """Extract RAG sub-graph outputs into the main agent state."""
-    return {
-        "rag_context": state.get("context", ""),
-        "rag_draft": state.get("draft_answer", ""),
-    }
-
-
-def _merge_tool_result(state: dict) -> dict:
-    """Extract tool sub-graph outputs into the main agent state."""
-    return {
-        "tool_results": state.get("tool_results", []),
-    }
-
-
-def _pass_through(state: dict) -> dict:
-    """Pass-through node for fan-out."""
-    return {}
-
-
 # ── Intent routing ────────────────────────────────────────
 def _route_after_intent(state: AgentState) -> str:
     """Return the next node name based on intent."""
@@ -73,14 +52,9 @@ def _route_after_intent(state: AgentState) -> str:
         return "final_generate"
 
 
-def _after_fanout_both(state: AgentState) -> str:
-    """Route from fanout node to both subgraphs."""
-    return "rag_subgraph"
-
-
-def _after_fanout_both_tool(state: AgentState) -> str:
-    """Route from fanout node to tool subgraph."""
-    return "tool_subgraph"
+def _pass_through(state: AgentState) -> dict:
+    """Pass-through node for fan-out."""
+    return {}
 
 
 def build_agent_graph(checkpointer=None) -> StateGraph:
@@ -88,6 +62,13 @@ def build_agent_graph(checkpointer=None) -> StateGraph:
 
     Call .compile(checkpointer=...) on the result to get a runnable graph.
     Passes checkpointer to subgraphs for HITL interrupt support.
+
+    Implementation note: AgentState is a plain dict subclass, while the
+    sub-graphs use TypedDict/dict subclasses. LangGraph's automatic state
+    mapping between these heterogeneous state types is unreliable and can
+    silently drop fields (e.g. ``user_query`` / ``sub_queries`` for the RAG
+    sub-graph). We therefore wrap each sub-graph invocation in an explicit
+    adapter node that copies the required fields in/out.
     """
     graph = StateGraph(AgentState)
 
@@ -103,12 +84,61 @@ def build_agent_graph(checkpointer=None) -> StateGraph:
     rag_sub = build_rag_subgraph(checkpointer=checkpointer)
     tool_sub = build_tool_subgraph(checkpointer=checkpointer)
 
-    graph.add_node("rag_subgraph", rag_sub)
-    graph.add_node("tool_subgraph", tool_sub)
+    async def _rag_subgraph_node(state: AgentState) -> dict:
+        """Explicitly bridge AgentState ↔ RagSubState to avoid field loss."""
+        from .subgraphs.rag_subgraph import RagSubState
 
-    # Merge nodes
-    graph.add_node("merge_rag", _merge_rag_result)
-    graph.add_node("merge_tool", _merge_tool_result)
+        user_query = state.get("user_query", "")
+        sub_queries = state.get("sub_queries", [])
+        if not sub_queries:
+            sub_queries = [user_query] if user_query else []
+
+        rag_input = RagSubState(
+            user_query=user_query,
+            rewritten_query=state.get("rewritten_query", user_query),
+            sub_queries=sub_queries,
+            vector_docs=[],
+            bm25_docs=[],
+            rrf_docs=[],
+            reranked_docs=[],
+            context="",
+            draft_answer="",
+            skip_draft=True,
+            inspect_trace={},
+        )
+
+        result = await rag_sub.ainvoke(rag_input)
+        # 主链路跳过草稿生成：直接映射原始知识 context 交给 assemble，
+        # 最终答案由 final_generate 一次性生成（省一次 HEAVY LLM 调用）。
+        context = result.get("context", "")
+        if not context or context.startswith("（知识库中未找到"):
+            context = ""
+        return {
+            "rag_context": context,
+            "rag_draft": "",
+        }
+
+    async def _tool_subgraph_node(state: AgentState) -> dict:
+        """Explicitly bridge AgentState ↔ ToolSubState to avoid field loss."""
+        from .subgraphs.tool_subgraph import ToolSubState
+
+        tool_input = ToolSubState(
+            user_query=state.get("user_query", ""),
+            thread_id=state.get("thread_id", ""),
+            tool_plan=[],
+            tool_results=[],
+            hitl_reviews=[],
+            iteration=0,
+        )
+
+        result = await tool_sub.ainvoke(tool_input)
+        return {
+            "tool_results": result.get("tool_results", []),
+            "hitl_reviews": result.get("hitl_reviews", []),
+        }
+
+    graph.add_node("rag_subgraph", _rag_subgraph_node)
+    graph.add_node("tool_subgraph", _tool_subgraph_node)
 
     # ── Entry & main flow ──────────────────────────────
     graph.set_entry_point("compress")
@@ -133,12 +163,10 @@ def build_agent_graph(checkpointer=None) -> StateGraph:
     graph.add_edge("fanout_both", "tool_subgraph")
 
     # ── After RAG subgraph ──────────────────────────────
-    graph.add_edge("rag_subgraph", "merge_rag")
-    graph.add_edge("merge_rag", "assemble")
+    graph.add_edge("rag_subgraph", "assemble")
 
     # ── After tool subgraph ─────────────────────────────
-    graph.add_edge("tool_subgraph", "merge_tool")
-    graph.add_edge("merge_tool", "assemble")
+    graph.add_edge("tool_subgraph", "assemble")
 
     # ── Final path ─────────────────────────────────────
     graph.add_edge("assemble", "final_generate")

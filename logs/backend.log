@@ -280,3 +280,226 @@ INFO:     Shutting down
 INFO:     Waiting for application shutdown.
 INFO:     Application shutdown complete.
 INFO:     Finished server process [42014]
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/jieba/_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+INFO:     Started server process [88346]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:55239 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55241 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55250 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55252 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55258 - "POST /api/chat HTTP/1.1" 200 OK
+[chroma] Connection failed: 'RustBindingsAPI' object has no attribute 'bindings'
+[chroma] Connection failed: '/Users/yang/wise/policy_agent/data/chroma'
+INFO:     127.0.0.1:55304 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55351 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55391 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [88346]
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/jieba/_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+INFO:     Started server process [95318]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:55953 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55959 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55971 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55973 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55975 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55977 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55987 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55989 - "POST /api/chat HTTP/1.1" 200 OK
+Building prefix dict from the default dictionary ...
+Dumping model to file cache /var/folders/xl/h9yvjws56b9ffk1r_j5hlzp80000gn/T/jieba.cache
+Loading model cost 0.714 seconds.
+Prefix dict has been built successfully.
+INFO:     127.0.0.1:56044 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56046 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56051 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56101 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [95318]
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/jieba/_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+INFO:     Started server process [96154]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:56146 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56148 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56158 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56160 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56165 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56167 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56169 - "POST /api/chat HTTP/1.1" 200 OK
+Building prefix dict from the default dictionary ...
+Loading model from cache /var/folders/xl/h9yvjws56b9ffk1r_j5hlzp80000gn/T/jieba.cache
+Loading model cost 0.684 seconds.
+Prefix dict has been built successfully.
+INFO:     127.0.0.1:56230 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56239 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56378 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56382 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56438 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56450 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56452 - "POST /api/rag/inspect HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56478 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56559 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56562 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56567 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56570 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56578 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56581 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56586 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56589 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [96154]
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/jieba/_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+INFO:     Started server process [98232]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:56633 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56643 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56653 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56656 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [98232]
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/jieba/_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+INFO:     Started server process [98746]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:56687 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56689 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56699 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56701 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56709 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56711 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56715 - "POST /api/chat HTTP/1.1" 200 OK
+Building prefix dict from the default dictionary ...
+Loading model from cache /var/folders/xl/h9yvjws56b9ffk1r_j5hlzp80000gn/T/jieba.cache
+Loading model cost 0.727 seconds.
+Prefix dict has been built successfully.
+INFO:     127.0.0.1:56768 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56809 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56812 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56815 - "GET /api/chat/history/thread-1787104863954-rdmhj9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56818 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56985 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for connections to close. (CTRL+C to force quit)
+ERROR:    ASGI callable returned without completing response.
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [98746]
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/jieba/_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+INFO:     Started server process [414]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:57261 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57263 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57271 - "POST /api/chat HTTP/1.1" 200 OK
+Building prefix dict from the default dictionary ...
+Loading model from cache /var/folders/xl/h9yvjws56b9ffk1r_j5hlzp80000gn/T/jieba.cache
+Loading model cost 4.423 seconds.
+Prefix dict has been built successfully.
+INFO:     127.0.0.1:57394 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57467 - "GET /api/chat/history/thread-1787114688441-kd281m HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57470 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57473 - "GET /api/chat/history/thread-1787114688441-kd281m HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57476 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57487 - "GET /api/chat/history/thread-1787114688441-kd281m HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57490 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57506 - "GET /api/chat/history/thread-1787114688441-kd281m HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57509 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [414]
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/jieba/_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+INFO:     Started server process [6080]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:57740 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57742 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57759 - "GET /api/chat/history/thread-1787114688441-kd281m HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57762 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57774 - "POST /api/chat HTTP/1.1" 200 OK
+Building prefix dict from the default dictionary ...
+Loading model from cache /var/folders/xl/h9yvjws56b9ffk1r_j5hlzp80000gn/T/jieba.cache
+Loading model cost 0.794 seconds.
+Prefix dict has been built successfully.
+INFO:     127.0.0.1:57829 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [6080]
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/jieba/_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+INFO:     Started server process [7848]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[checkpointer] AsyncSqliteSaver connected → /Users/yang/wise/policy_agent/data/checkpoints.sqlite
+INFO:     127.0.0.1:57938 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57947 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57951 - "GET /api/chat/history/thread-1787114688441-kd281m HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57954 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57965 - "POST /api/chat HTTP/1.1" 200 OK
+Building prefix dict from the default dictionary ...
+Loading model from cache /var/folders/xl/h9yvjws56b9ffk1r_j5hlzp80000gn/T/jieba.cache
+Loading model cost 0.679 seconds.
+Prefix dict has been built successfully.
+INFO:     127.0.0.1:57992 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57999 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58022 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58031 - "POST /api/chat HTTP/1.1" 200 OK
+Deserializing unregistered type backend.core.state.ToolResult from checkpoint. This will be blocked in a future version. Set LANGGRAPH_STRICT_MSGPACK=true to block now, or add to allowed_msgpack_modules to allow explicitly: [('backend.core.state', 'ToolResult')]
+INFO:     127.0.0.1:58058 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58067 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58092 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58130 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58159 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58165 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58198 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58208 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58221 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58236 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58245 - "GET /api/chat/history/thread-1787114688441-kd281m HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58247 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58253 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58290 - "GET /api/chat/history/thread-1787114688441-kd281m HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58295 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58329 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58343 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58358 - "GET /api/chat/history/thread-1787114688441-kd281m HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58360 - "GET /api/chat/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58362 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58403 - "GET /api/chat/conversations HTTP/1.1" 200 OK
